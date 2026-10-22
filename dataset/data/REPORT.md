@@ -1,0 +1,241 @@
+# Dataset Preparation Report
+
+- Source: `gretelai/synthetic_pii_finance_multilingual`
+- Language: English
+- Random seed: 42
+- Maximum chunk length: 200 tokens
+- Tagging scheme: BIO
+- Test source split preserved; duplicate training documents removed.
+
+## Filtering statistics
+
+### test
+
+- raw_documents: 5594
+- checked: 5594
+- kept_documents: 2258
+- unaligned_spans: 1995
+- non_english: 2632
+- short_documents: 165
+- invalid_spans: 92
+- token_tag_conflicts: 296
+- documents_without_pii: 151
+
+### train
+
+- raw_documents: 50346
+- checked: 50346
+- kept_documents: 19746
+- unaligned_spans: 17327
+- non_english: 24398
+- short_documents: 1449
+- documents_without_pii: 1335
+- token_tag_conflicts: 2613
+- invalid_spans: 796
+- duplicate_documents: 9
+- duplicates_of_test: 1
+
+## Output sizes
+
+- train: 30545 chunks
+- val: 3389 chunks
+- test: 3903 chunks
+
+## Entity counts by BIO label
+
+- NAME: 34020
+- COMPANY: 28961
+- ADDRESS: 17513
+- DATE: 57299
+- EMAIL: 2238
+- PHONE: 3121
+- ACCOUNT: 4422
+- ID: 4995
+
+## Document type distribution
+
+### train
+- Annual Report: 224
+- Audit Report: 213
+- BAI Format: 462
+- Bank Statement: 213
+- Bill of Lading: 622
+- Business Plan: 212
+- CSV: 92
+- Compliance Certificate: 198
+- Corporate Governance Guidelines: 192
+- Corporate Tax Return: 257
+- Credit Application: 168
+- Credit Card Application: 199
+- Credit Card Statement: 198
+- Cryptocurrency Transaction Report: 180
+- Currency Exchange Rate Sheet: 178
+- Customer Agreement: 215
+- Customer support conversational log: 643
+- Dispute Resolution Policy: 188
+- EDI: 331
+- Email: 530
+- Employment Contract: 189
+- FIX Protocol: 238
+- Financial Aid Application: 138
+- Financial Data Feed: 224
+- Financial Disclosure Statement: 219
+- Financial Forecast: 206
+- Financial Regulatory Compliance Report: 196
+- Financial Risk Assessment: 234
+- Financial Statement: 588
+- FpML: 651
+- Health Insurance Claim Form: 376
+- ISDA Definition: 627
+- IT support ticket: 520
+- Insurance Claim Form: 204
+- Insurance Policy: 616
+- Investment Prospectus: 363
+- Loan Agreement: 232
+- Loan Application: 442
+- MT940: 390
+- Mortgage Amortization Schedule: 256
+- Mortgage Contract: 218
+- Payment Confirmation: 335
+- Pension Plan Agreement: 255
+- Policyholder's Report: 446
+- Privacy Policy: 142
+- Product Disclosure Statement: 190
+- Real Estate Loan Agreement: 217
+- Regulatory Compliance Guide: 192
+- Regulatory Filing: 227
+- Renewal Reminder: 160
+- SWIFT Message: 507
+- Safety Data Sheet: 516
+- Securities Prospectus: 175
+- Shareholder Agreement: 218
+- Supply Chain Management Agreement: 218
+- Tax Assessment Notice: 148
+- Tax Return: 241
+- Trade Confirmation: 332
+- Transaction Confirmation: 181
+- XBRL: 429
+
+### val
+- Annual Report: 20
+- Audit Report: 30
+- BAI Format: 54
+- Bank Statement: 26
+- Bill of Lading: 65
+- Business Plan: 21
+- CSV: 5
+- Compliance Certificate: 20
+- Corporate Governance Guidelines: 20
+- Corporate Tax Return: 30
+- Credit Application: 22
+- Credit Card Application: 28
+- Credit Card Statement: 20
+- Cryptocurrency Transaction Report: 30
+- Currency Exchange Rate Sheet: 11
+- Customer Agreement: 20
+- Customer support conversational log: 62
+- Dispute Resolution Policy: 19
+- EDI: 30
+- Email: 55
+- Employment Contract: 29
+- FIX Protocol: 30
+- Financial Aid Application: 21
+- Financial Data Feed: 23
+- Financial Disclosure Statement: 28
+- Financial Forecast: 29
+- Financial Regulatory Compliance Report: 21
+- Financial Risk Assessment: 27
+- Financial Statement: 63
+- FpML: 65
+- Health Insurance Claim Form: 40
+- ISDA Definition: 62
+- IT support ticket: 64
+- Insurance Claim Form: 16
+- Insurance Policy: 66
+- Investment Prospectus: 45
+- Loan Agreement: 35
+- Loan Application: 41
+- MT940: 41
+- Mortgage Amortization Schedule: 31
+- Mortgage Contract: 28
+- Payment Confirmation: 34
+- Pension Plan Agreement: 25
+- Policyholder's Report: 52
+- Privacy Policy: 15
+- Product Disclosure Statement: 25
+- Real Estate Loan Agreement: 25
+- Regulatory Compliance Guide: 16
+- Regulatory Filing: 31
+- Renewal Reminder: 15
+- SWIFT Message: 58
+- Safety Data Sheet: 52
+- Securities Prospectus: 25
+- Shareholder Agreement: 20
+- Supply Chain Management Agreement: 27
+- Tax Assessment Notice: 23
+- Tax Return: 25
+- Trade Confirmation: 36
+- Transaction Confirmation: 31
+- XBRL: 46
+
+### test
+- Annual Report: 23
+- Audit Report: 28
+- BAI Format: 73
+- Bank Statement: 37
+- Bill of Lading: 73
+- Business Plan: 15
+- CSV: 15
+- Compliance Certificate: 26
+- Corporate Governance Guidelines: 26
+- Corporate Tax Return: 22
+- Credit Application: 19
+- Credit Card Application: 26
+- Credit Card Statement: 33
+- Cryptocurrency Transaction Report: 19
+- Currency Exchange Rate Sheet: 20
+- Customer Agreement: 27
+- Customer support conversational log: 72
+- Dispute Resolution Policy: 22
+- EDI: 38
+- Email: 78
+- Employment Contract: 34
+- FIX Protocol: 28
+- Financial Aid Application: 21
+- Financial Data Feed: 25
+- Financial Disclosure Statement: 30
+- Financial Forecast: 28
+- Financial Regulatory Compliance Report: 34
+- Financial Risk Assessment: 24
+- Financial Statement: 73
+- FpML: 84
+- Health Insurance Claim Form: 44
+- ISDA Definition: 85
+- IT support ticket: 56
+- Insurance Claim Form: 13
+- Insurance Policy: 93
+- Investment Prospectus: 49
+- Loan Agreement: 39
+- Loan Application: 69
+- MT940: 43
+- Mortgage Amortization Schedule: 29
+- Mortgage Contract: 27
+- Payment Confirmation: 37
+- Pension Plan Agreement: 21
+- Policyholder's Report: 53
+- Privacy Policy: 20
+- Product Disclosure Statement: 31
+- Real Estate Loan Agreement: 32
+- Regulatory Compliance Guide: 27
+- Regulatory Filing: 21
+- Renewal Reminder: 23
+- SWIFT Message: 43
+- Safety Data Sheet: 69
+- Securities Prospectus: 30
+- Shareholder Agreement: 29
+- Supply Chain Management Agreement: 22
+- Tax Assessment Notice: 19
+- Tax Return: 33
+- Trade Confirmation: 51
+- Transaction Confirmation: 25
+- XBRL: 52

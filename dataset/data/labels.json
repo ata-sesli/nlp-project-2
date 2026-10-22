@@ -1,0 +1,19 @@
+[
+  "O",
+  "B-NAME",
+  "I-NAME",
+  "B-COMPANY",
+  "I-COMPANY",
+  "B-ADDRESS",
+  "I-ADDRESS",
+  "B-DATE",
+  "I-DATE",
+  "B-EMAIL",
+  "I-EMAIL",
+  "B-PHONE",
+  "I-PHONE",
+  "B-ACCOUNT",
+  "I-ACCOUNT",
+  "B-ID",
+  "I-ID"
+]
