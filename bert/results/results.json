@@ -1,0 +1,203 @@
+{
+  "settings": {
+    "data_dir": "/content/nlp-project-2/dataset/data",
+    "model": "bert-base-cased",
+    "out": "/content/drive/MyDrive/NLP-2/bert_full",
+    "train_limit": 0,
+    "epochs": 3,
+    "lr": 3e-05,
+    "batch_size": 16,
+    "max_len": 512,
+    "warmup": 0.1,
+    "seed": 42
+  },
+  "device": "cuda",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "train_chunks": 30545,
+  "train_seconds": 453.6,
+  "words_cut_by_max_len": {
+    "train": 2,
+    "val": 0
+  },
+  "chunks_split_for_max_len": {
+    "train": 1243,
+    "val": 139
+  },
+  "val_history": [
+    {
+      "epoch": 1.0,
+      "f1": 0.8388585662478479,
+      "precision": 0.8386435215703508,
+      "recall": 0.8390737212369925,
+      "loss": 0.04873066768050194
+    },
+    {
+      "epoch": 2.0,
+      "f1": 0.8574925308664195,
+      "precision": 0.8426600636717368,
+      "recall": 0.8728565147295911,
+      "loss": 0.0427844375371933
+    },
+    {
+      "epoch": 3.0,
+      "f1": 0.861251316315044,
+      "precision": 0.853595335780609,
+      "recall": 0.8690458742488641,
+      "loss": 0.04177996516227722
+    }
+  ],
+  "splits": {
+    "val": {
+      "precision": 0.8535233570863024,
+      "recall": 0.8689725927011579,
+      "f1": 0.8611786920367479,
+      "missed_pii_rate": 0.1310274072988421,
+      "token_accuracy": 0.986606530174296,
+      "per_type": {
+        "ACCOUNT": {
+          "precision": 0.8936170212765957,
+          "recall": 0.8549618320610687,
+          "f1-score": 0.8738621586475942,
+          "support": 393.0
+        },
+        "ADDRESS": {
+          "precision": 0.8712121212121212,
+          "recall": 0.8996088657105606,
+          "f1-score": 0.8851828094932649,
+          "support": 1534.0
+        },
+        "COMPANY": {
+          "precision": 0.8187702265372169,
+          "recall": 0.840531561461794,
+          "f1-score": 0.8295081967213115,
+          "support": 2709.0
+        },
+        "DATE": {
+          "precision": 0.8307977736549165,
+          "recall": 0.8708673667833527,
+          "f1-score": 0.8503608051652107,
+          "support": 5142.0
+        },
+        "EMAIL": {
+          "precision": 0.8947368421052632,
+          "recall": 0.949238578680203,
+          "f1-score": 0.9211822660098522,
+          "support": 197.0
+        },
+        "ID": {
+          "precision": 0.9311926605504587,
+          "recall": 0.918552036199095,
+          "f1-score": 0.9248291571753986,
+          "support": 442.0
+        },
+        "NAME": {
+          "precision": 0.898943661971831,
+          "recall": 0.8598854833277197,
+          "f1-score": 0.8789808917197454,
+          "support": 2969.0
+        },
+        "PHONE": {
+          "precision": 0.8700361010830325,
+          "recall": 0.926923076923077,
+          "f1-score": 0.8975791433891992,
+          "support": 260.0
+        },
+        "micro avg": {
+          "precision": 0.8535233570863024,
+          "recall": 0.8689725927011579,
+          "f1-score": 0.8611786920367479,
+          "support": 13646.0
+        },
+        "macro avg": {
+          "precision": 0.8761633010489295,
+          "recall": 0.8900711001433588,
+          "f1-score": 0.8826856785401971,
+          "support": 13646.0
+        },
+        "weighted avg": {
+          "precision": 0.8545115793388532,
+          "recall": 0.8689725927011579,
+          "f1-score": 0.8613735498945699,
+          "support": 13646.0
+        }
+      },
+      "predict_seconds": 9.0
+    },
+    "test": {
+      "precision": 0.8595208070617907,
+      "recall": 0.8771636316839329,
+      "f1": 0.8682526034202732,
+      "missed_pii_rate": 0.12283636831606715,
+      "token_accuracy": 0.9871802506564167,
+      "per_type": {
+        "ACCOUNT": {
+          "precision": 0.911340206185567,
+          "recall": 0.8403041825095057,
+          "f1-score": 0.8743818001978239,
+          "support": 526.0
+        },
+        "ADDRESS": {
+          "precision": 0.8753260302556077,
+          "recall": 0.9040948275862069,
+          "f1-score": 0.8894778690697058,
+          "support": 1856.0
+        },
+        "COMPANY": {
+          "precision": 0.8052580331061344,
+          "recall": 0.8461800818553888,
+          "f1-score": 0.8252120405787461,
+          "support": 2932.0
+        },
+        "DATE": {
+          "precision": 0.8472660794415822,
+          "recall": 0.8925070028011205,
+          "f1-score": 0.8692983204024214,
+          "support": 5712.0
+        },
+        "EMAIL": {
+          "precision": 0.9116465863453815,
+          "recall": 0.941908713692946,
+          "f1-score": 0.9265306122448979,
+          "support": 241.0
+        },
+        "ID": {
+          "precision": 0.9015748031496063,
+          "recall": 0.9346938775510204,
+          "f1-score": 0.9178356713426854,
+          "support": 490.0
+        },
+        "NAME": {
+          "precision": 0.9039704524469068,
+          "recall": 0.8520452567449956,
+          "f1-score": 0.8772401433691757,
+          "support": 3447.0
+        },
+        "PHONE": {
+          "precision": 0.8785310734463276,
+          "recall": 0.9228486646884273,
+          "f1-score": 0.9001447178002894,
+          "support": 337.0
+        },
+        "micro avg": {
+          "precision": 0.8595208070617907,
+          "recall": 0.8771636316839329,
+          "f1-score": 0.8682526034202732,
+          "support": 15541.0
+        },
+        "macro avg": {
+          "precision": 0.8793641580471392,
+          "recall": 0.8918228259287014,
+          "f1-score": 0.8850151468757181,
+          "support": 15541.0
+        },
+        "weighted avg": {
+          "precision": 0.8608262056260192,
+          "recall": 0.8771636316839329,
+          "f1-score": 0.8684111937207467,
+          "support": 15541.0
+        }
+      },
+      "predict_seconds": 10.1
+    }
+  }
+}
