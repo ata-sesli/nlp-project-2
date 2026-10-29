@@ -35,6 +35,24 @@ python bert/train_bert_ner.py --out runs/bert_full
 Options: `--model`, `--epochs`, `--lr`, `--batch-size`, `--max-len`, `--train-limit N` (quick test
 on N random training chunks), `--seed`.
 
+## Use the published model
+
+No training is needed to use the model: the lines below download it from the Hugging Face Hub
+(once; later runs use the local cache) and tag new text.
+
+```python
+from transformers import pipeline
+
+ner = pipeline("token-classification", model="akifkulll/finance-pii-bert-base-cased",
+               aggregation_strategy="first", stride=128)
+ner("John Smith paid 500 EUR to XYZ Corp on 12 March 2024.")
+```
+
+Each result is one entity: `entity_group` (NAME, COMPANY, ...), `word`, `score` and the character
+offsets `start`, `end`. `aggregation_strategy="first"` takes each word's tag from its first
+subword, the same rule used in training; `stride=128` reads texts longer than 512 subword tokens
+in overlapping windows instead of cutting them.
+
 ## How it works
 
 1. **Subword alignment.** BERT splits words into pieces ("Schmidt" -> `Sch`, `##mid`, `##t`).
