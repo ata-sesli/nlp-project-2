@@ -23,7 +23,7 @@ of modeling label transitions.
 | `predictions/crf_val.jsonl`, `predictions/crf_test.jsonl` | CRF predictions, same format |
 | `results/svm_results.json` | SVM settings, tuning grid, timing, token-level and entity-level reports |
 | `results/crf_results.json` | CRF settings, tuning grid, timing, learned transitions, token-level and entity-level reports |
-| `models/` | Saved models (`svm.joblib` about 143 MB, `crf.joblib` 11 MB); not committed, rebuilt by the scripts |
+| `models/` | Saved models (`svm.joblib` about 143 MB, `crf.joblib` 11 MB); not committed, rebuilt by the scripts. Checkpoints hosted on Hugging Face: [SVM Checkpoint](https://huggingface.co/elifsudayi/svm-ner) and [CRF Checkpoint](https://huggingface.co/elifsudayi/crf-ner) |
 
 ## How to run
 
