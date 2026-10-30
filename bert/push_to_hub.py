@@ -7,6 +7,7 @@ In Colab, after logging in (from huggingface_hub import notebook_login; notebook
         --results /content/drive/MyDrive/NLP-2/bert_full/results.json \
         --repo-id akifkulll/finance-pii-bert-base-cased
 Add --dry-run to only write the model card without uploading.
+Add --card-only to upload just the model card (README.md), e.g. after editing the card text.
 """
 
 import argparse
@@ -45,6 +46,23 @@ PHONE, ACCOUNT, ID.
 Built for the COE025 Natural Language Processing course project (İstinye University).
 Code and data preparation: https://github.com/ata-sesli/nlp-project-2
 
+## Use
+
+```python
+from transformers import pipeline
+
+ner = pipeline("token-classification", model="{repo_id}",
+               aggregation_strategy="first", stride=128)
+ner("John Smith paid 500 EUR to XYZ Corp on 12 March 2024.")
+```
+
+`aggregation_strategy="first"` joins the subword pieces back into words and takes each word's tag
+from its first piece, the same rule used in training. Each result is one entity:
+`entity_group` (NAME, COMPANY, ...), `word`, `score` and the character offsets `start`, `end`.
+
+`stride=128` lets texts longer than BERT's 512-token limit be read in overlapping windows, so
+nothing is cut off. The model was trained on English synthetic financial documents.
+
 ## Training
 
 - Data: English part of `gretelai/synthetic_pii_finance_multilingual`, cleaned and converted to
@@ -81,6 +99,7 @@ def main():
     p.add_argument("--results", required=True)
     p.add_argument("--repo-id", required=True)
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--card-only", action="store_true", help="upload only README.md, not the weights")
     a = p.parse_args()
 
     r = json.load(open(a.results))
@@ -92,6 +111,11 @@ def main():
 
     from huggingface_hub import HfApi
     api = HfApi()
+    if a.card_only:
+        api.upload_file(path_or_fileobj=str(Path(a.model_dir, "README.md")), path_in_repo="README.md",
+                        repo_id=a.repo_id, commit_message="Update model card")
+        print(f"model card updated -> https://huggingface.co/{a.repo_id}")
+        return
     api.create_repo(a.repo_id, exist_ok=True)
     api.upload_folder(folder_path=a.model_dir, repo_id=a.repo_id,
                       commit_message="Upload fine-tuned BERT for financial PII NER")
