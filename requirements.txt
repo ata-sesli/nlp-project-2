@@ -5,3 +5,5 @@ joblib
 transformers
 torch
 huggingface-hub
+matplotlib
+pytorch-crf
