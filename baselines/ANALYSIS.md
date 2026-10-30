@@ -1,27 +1,42 @@
 
-# Baseline Models and Analysis
+# Baseline Models and HMM-Viterbi Analysis
 
 ## 1. Project Overview
 
-This project focuses on detecting Personally Identifiable Information (PII)
-in financial documents using token-level Named Entity Recognition (NER).
+This project focuses on Named Entity Recognition (NER) using BIO tagging. The objective is to identify personal and financial information entities in text sequences.
 
-The task is formulated as a sequence-labeling problem. Each token receives
-a BIO tag indicating whether it is outside an entity, at the beginning of
-an entity, or inside an entity.
+Two baseline approaches were implemented and evaluated:
 
-Two baseline models were implemented and evaluated:
+1. **Most Frequent Baseline:** Predicts the most frequent tag observed for each token.
+2. **HMM with Viterbi Decoding:** Uses a first-order Hidden Markov Model (HMM) and the Viterbi algorithm to predict the most likely tag sequence.
 
-1. Most Frequent baseline
-2. Hidden Markov Model (HMM) with Viterbi decoding
+Both models were evaluated using token-level and entity-level metrics.
 
 ## 2. Dataset Preparation
 
-The dataset is derived from the
-`gretelai/synthetic_pii_finance_multilingual` dataset.
+The dataset was prepared from the English subset of the `gretelai/synthetic_pii_finance_multilingual` dataset.
 
-English-language records were selected. PII labels were mapped into
-eight categories:
+The preparation process includes:
+
+- Converting character-level entity annotations into token-level BIO tags.
+- Using the BIO tagging scheme to represent entity boundaries.
+- Splitting the training documents into training and validation sets before chunking.
+- Preserving the original test source split.
+- Removing duplicate training documents that overlap with the test split.
+- Dividing long sequences into chunks with a maximum length of 200 tokens.
+- Saving the processed data in compressed JSONL format.
+
+The resulting dataset contains:
+
+| Split | Number of chunks |
+|---|---:|
+| Train | 30,545 |
+| Validation | 3,389 |
+| Test | 3,903 |
+
+The dataset contains 17 labels: one outside-entity label (`O`) and 16 BIO labels representing eight entity categories.
+
+The entity categories are:
 
 - NAME
 - COMPANY
@@ -32,188 +47,275 @@ eight categories:
 - ACCOUNT
 - ID
 
-The data was tokenized and converted into BIO format.
+The dataset preparation process is documented in `dataset/data/REPORT.md`.
 
-The prepared dataset contains the following splits:
+## 3. BIO Tagging Scheme
 
-| Split | Chunks |
-|---|---:|
-| Train | 30,545 |
-| Validation | 3,389 |
-| Test | 3,903 |
+The BIO scheme represents entity boundaries using three types of tags:
 
-Each chunk contains a token sequence and a corresponding tag sequence.
-Chunks contain at most 200 tokens.
+- `B-TYPE`: Beginning of an entity.
+- `I-TYPE`: Continuation of an entity.
+- `O`: Token that does not belong to an entity.
 
-The training data was divided into training and validation subsets.
-The original test split was preserved for final evaluation.
+For example:
 
-## 3. Evaluation Methodology
+| Token | BIO tag |
+|---|---|
+| John | B-NAME |
+| Smith | I-NAME |
+| works | O |
+| at | O |
+| Acme | B-COMPANY |
+| Corporation | I-COMPANY |
 
-Both models were evaluated using token-level classification metrics.
+The BIO scheme is important because identifying an entity requires both recognizing its type and determining its exact boundaries.
 
-The following metrics were reported:
+## 4. Evaluation Methodology
 
-- Accuracy
-- Precision
-- Recall
-- Macro F1-score
-- Weighted F1-score
-- Per-label precision, recall, and F1-score
+The models were evaluated at two different levels.
 
-Macro F1 assigns equal weight to each evaluated class, making it useful
-for examining performance across imbalanced labels.
+### 4.1 Token-Level Evaluation
 
-Weighted F1 accounts for the number of true instances in each class.
-Accuracy and weighted F1 must be interpreted carefully because the
-outside-entity label (`O`) dominates the dataset.
+Token-level evaluation compares the predicted BIO tag with the corresponding gold BIO tag for every token.
 
-## 4. Model 1: Most Frequent Baseline
+The following metrics were calculated:
 
-The Most Frequent model learns the most common training label for each
-lowercased token.
+- **Accuracy:** Proportion of correctly predicted tokens.
+- **Precision:** Proportion of predicted positive labels that are correct.
+- **Recall:** Proportion of actual positive labels that are correctly identified.
+- **Macro F1:** Average F1 score across labels, giving each label equal weight.
+- **Weighted F1:** Average F1 score weighted by the number of instances belonging to each label.
 
-If a token was not observed during training, the model assigns the
-globally most frequent training label.
+Accuracy and weighted F1 must be interpreted carefully because the outside-entity label (`O`) dominates the dataset. A model can achieve high token accuracy while still performing poorly at identifying complete entities.
 
-This is a simple lexical baseline. It does not explicitly model the
-relationships between neighboring labels.
+For this reason, token-level metrics alone are not sufficient to evaluate NER performance.
 
-### Test Results
+### 4.2 Entity-Level Evaluation
 
-| Metric | Score |
-|---|---:|
-| Accuracy | 0.9493 |
-| Macro Precision | 0.6345 |
-| Macro Recall | 0.3438 |
-| Macro F1 | 0.4166 |
-| Weighted F1 | 0.9419 |
+Entity-level evaluation measures whether the model correctly identifies complete entities.
 
-The model achieves high accuracy, but its macro recall is considerably
-lower. This indicates that the model does not identify all PII classes
-equally well.
+An entity is considered correct only when all three conditions match:
 
-## 5. Model 2: HMM + Viterbi
+1. Entity type.
+2. Start token position.
+3. End token position.
 
-The Hidden Markov Model estimates:
+For example, predicting the correct entity type but an incorrect boundary is counted as an error.
 
-- Initial tag probabilities
-- Tag transition probabilities
-- Token emission probabilities
+The evaluation uses exact-span matching. Entity spans are extracted from BIO sequences and compared between predictions and gold annotations.
 
-Laplace smoothing is used to handle unseen events. Token strings are
-lowercased before emission statistics are calculated.
+Invalid `I-TYPE` tags that do not continue an entity of the same type are interpreted as the beginning of a new entity of that type. This provides a consistent method for handling malformed BIO sequences.
 
-The Viterbi algorithm finds the highest-scoring tag sequence using
-dynamic programming.
+The evaluator also checks that prediction and gold records have matching identifiers and sequence lengths. Record identifiers are included in entity matching to prevent entities from different records from being matched accidentally.
 
-BIO transition constraints prevent invalid transitions into an
-inside-entity tag. For example, `I-EMAIL` cannot directly follow `O`.
+The following metrics are reported:
 
-### Test Results
+- **Entity Precision:** Correctly predicted entities divided by all predicted entities.
+- **Entity Recall:** Correctly predicted entities divided by all gold entities.
+- **Entity F1:** Harmonic mean of entity precision and recall.
 
-| Metric | Score |
-|---|---:|
-| Accuracy | 0.9532 |
-| Macro Precision | 0.5260 |
-| Macro Recall | 0.5096 |
-| Macro F1 | 0.4688 |
-| Weighted F1 | 0.9550 |
+Entity-level evaluation provides a more meaningful measure of NER performance because it considers complete entity boundaries rather than individual token predictions.
 
-The HMM model improves macro F1 and macro recall compared with the
-Most Frequent baseline. However, its macro precision is lower, indicating
-that some of its additional positive predictions are incorrect.
+## 5. Most Frequent Baseline
 
-## 6. Overall Model Comparison
+The Most Frequent baseline is a simple statistical approach.
 
-| Split | Model | Accuracy | Macro Precision | Macro Recall | Macro F1 | Weighted F1 |
+During training, the model calculates the most frequently observed tag for each lowercased token.
+
+During prediction:
+
+1. The token is converted to lowercase.
+2. The model looks up the most frequent tag associated with that token.
+3. If the token has not been observed during training, the model predicts the globally most frequent tag.
+
+This approach provides a simple reference point for evaluating more advanced models.
+
+However, it does not consider the surrounding context or relationships between consecutive tags. Therefore, it may struggle to identify entity boundaries and distinguish between different uses of the same token.
+
+## 6. Hidden Markov Model (HMM)
+
+A Hidden Markov Model is a probabilistic model that represents a sequence using hidden states and observable outputs.
+
+In this project:
+
+- Hidden states represent BIO tags.
+- Observations represent input tokens.
+- Transition probabilities model relationships between consecutive tags.
+- Emission probabilities model the likelihood of observing a token given a tag.
+- Initial probabilities model the likelihood of starting a sequence with a particular tag.
+
+The model assumes that the current hidden state depends on the previous hidden state and that the current observation depends on the current hidden state.
+
+### 6.1 Initial Probabilities
+
+Initial probabilities represent the likelihood of a tag appearing at the beginning of a sequence.
+
+For example, a sequence is more likely to begin with `O` or a `B-TYPE` tag than with an `I-TYPE` tag.
+
+### 6.2 Transition Probabilities
+
+Transition probabilities represent the likelihood of one tag following another.
+
+For example:
+
+- `B-NAME` can be followed by `I-NAME`.
+- `I-NAME` can be followed by `I-NAME` or another valid tag.
+- `O` can be followed by `O` or a `B-TYPE` tag.
+
+The model applies BIO transition constraints to prevent invalid transitions between entity types.
+
+### 6.3 Emission Probabilities
+
+Emission probabilities represent the likelihood of a token being generated by a particular tag.
+
+For example, a token frequently observed with the `B-NAME` tag will have a higher emission probability for that tag.
+
+Tokens are lowercased before emission lookup. An unknown-token bucket is used to handle tokens that were not observed during training.
+
+### 6.4 Laplace Smoothing
+
+Laplace smoothing is applied with an alpha value of 0.1.
+
+Smoothing prevents unseen events from receiving zero probability. Without smoothing, a single zero-probability transition or emission could make an entire sequence impossible under the model.
+
+## 7. Viterbi Decoding
+
+The Viterbi algorithm is a dynamic programming algorithm used to find the most probable sequence of hidden states.
+
+In this project, it identifies the most likely BIO tag sequence for a given token sequence.
+
+Instead of evaluating every possible tag sequence independently, Viterbi decoding stores the best score for each possible current tag at each position.
+
+The algorithm consists of three main stages:
+
+1. **Initialization:** Calculate the initial scores for the first token.
+2. **Recursion:** Calculate the best possible path to each tag at every subsequent position.
+3. **Backtracking:** Recover the most likely complete tag sequence.
+
+The HMM and Viterbi algorithm work together: the HMM provides the probability distributions, while Viterbi finds the most probable sequence according to those distributions.
+
+## 8. Token-Level Results
+
+The following table presents the token-level evaluation results.
+
+| Model | Split | Accuracy | Macro Precision | Macro Recall | Macro F1 | Weighted F1 |
 |---|---|---:|---:|---:|---:|---:|
-| Validation | Most Frequent | 0.9479 | 0.6814 | 0.3618 | 0.4397 | 0.9402 |
-| Validation | HMM + Viterbi | 0.9506 | 0.5007 | 0.5137 | 0.4600 | 0.9526 |
-| Test | Most Frequent | 0.9493 | 0.6345 | 0.3438 | 0.4166 | 0.9419 |
-| Test | HMM + Viterbi | 0.9532 | 0.5260 | 0.5096 | 0.4688 | 0.9550 |
+| Most Frequent | Validation | 0.9479 | 0.6814 | 0.3618 | 0.4397 | 0.9402 |
+| Most Frequent | Test | 0.9493 | 0.6345 | 0.3438 | 0.4166 | 0.9419 |
+| HMM + Viterbi | Validation | 0.9506 | 0.5007 | 0.5137 | 0.4600 | 0.9526 |
+| HMM + Viterbi | Test | 0.9532 | 0.5260 | 0.5096 | 0.4688 | 0.9550 |
 
-On the test set, HMM + Viterbi improves macro F1 from 0.4166 to 0.4688,
-an increase of approximately 5.22 percentage points.
+### 8.1 Token-Level Interpretation
 
-Test accuracy increases by 0.39 percentage points, while weighted F1
-increases by approximately 1.31 percentage points.
+The HMM model achieves higher test accuracy and macro F1 than the Most Frequent baseline.
 
-The macro F1 improvement is particularly relevant because it indicates
-better aggregate performance across the evaluated classes, rather than
-performance being dominated by the majority class.
+The test macro F1 increases from approximately 0.4166 to 0.4688.
 
-## 7. Per-Label Test F1 Comparison
+The HMM also achieves a higher macro recall, indicating that it identifies a larger proportion of instances across labels.
 
-| Label | Most Frequent F1 | HMM F1 | Difference |
-|---|---:|---:|---:|
-| B-ACCOUNT | 0.0674 | 0.0926 | +0.0252 |
-| B-ADDRESS | 0.5439 | 0.7196 | +0.1757 |
-| B-COMPANY | 0.5724 | 0.6531 | +0.0806 |
-| B-DATE | 0.6574 | 0.7322 | +0.0748 |
-| B-EMAIL | 0.4169 | 0.3804 | -0.0366 |
-| B-ID | 0.0819 | 0.0814 | -0.0005 |
-| B-NAME | 0.6243 | 0.7168 | +0.0925 |
-| B-PHONE | 0.6148 | 0.3722 | -0.2426 |
-| I-ACCOUNT | 0.0800 | 0.0112 | -0.0688 |
-| I-ADDRESS | 0.4832 | 0.7489 | +0.2658 |
-| I-COMPANY | 0.4475 | 0.6309 | +0.1834 |
-| I-DATE | 0.5477 | 0.7182 | +0.1705 |
-| I-EMAIL | 0.0000 | 0.0000 | 0.0000 |
-| I-ID | 0.0000 | 0.0000 | 0.0000 |
-| I-NAME | 0.5151 | 0.7626 | +0.2475 |
-| I-PHONE | 0.4526 | 0.3720 | -0.0806 |
+The Most Frequent baseline has higher macro precision, meaning that its positive predictions are more selective. However, its lower recall indicates that it misses a larger proportion of actual labels.
 
-### Observations
+The difference between accuracy and macro F1 is particularly important. Because the `O` label is dominant, accuracy can remain high even when performance on less frequent entity labels is limited.
 
-The largest improvements occur in:
+## 9. Entity-Level Results
 
-- I-ADDRESS
-- I-NAME
-- B-ADDRESS
-- I-DATE
-- I-COMPANY
+Entity-level evaluation provides a stricter assessment of NER performance.
 
-These results suggest that sequence modeling helps the HMM identify
-continuations of multi-token entities and some entity boundaries.
+| Model | Split | Precision | Recall | F1 |
+|---|---|---:|---:|---:|
+| Most Frequent | Validation | 0.2207 | 0.2928 | 0.2517 |
+| HMM + Viterbi | Validation | 0.5379 | 0.4811 | 0.5079 |
+| Most Frequent | Test | 0.2318 | 0.3100 | 0.2653 |
+| HMM + Viterbi | Test | 0.5469 | 0.4971 | 0.5208 |
 
-However, the HMM performs worse on B-PHONE, I-PHONE, and B-EMAIL.
-ACCOUNT and ID detection also remains weak.
+### 9.1 Entity-Level Interpretation
 
-The results indicate that sequence modeling alone does not solve the
-challenges associated with rare or difficult entity types.
+The HMM model substantially outperforms the Most Frequent baseline in exact-span entity evaluation.
 
-## 8. Limitations
+On the test set:
 
-1. The Most Frequent baseline relies on token-label frequencies and
-   does not explicitly model sequence structure.
+- Most Frequent entity F1: 0.2653
+- HMM entity F1: 0.5208
 
-2. The HMM uses unigram token emissions and first-order label transitions.
-   It does not directly model richer contextual representations.
+This corresponds to an improvement of approximately 25.55 percentage points.
 
-3. Lowercasing removes capitalization information that may help identify
-   names and organizations.
+The HMM model also identifies more correct entities:
 
-4. Class imbalance affects the interpretation of aggregate metrics.
+| Metric | Most Frequent | HMM + Viterbi |
+|---|---:|---:|
+| True Positives | 4,818 | 7,725 |
+| False Positives | 15,968 | 6,401 |
+| False Negatives | 10,723 | 7,816 |
 
-5. Some entity labels have very low support, making their F1-scores
-   unstable or difficult to interpret.
+The HMM model produces substantially fewer false positives while identifying more correct entities.
 
-6. Token-level metrics do not directly measure exact entity-span
-   precision and recall.
+This suggests that modeling relationships between consecutive tags helps the model produce more coherent entity sequences.
 
-## 9. Conclusion
+## 10. Per-Entity-Type Test F1
 
-HMM + Viterbi outperforms the Most Frequent baseline on test accuracy,
-macro recall, macro F1, and weighted F1.
+The following table compares entity-level F1 scores for each entity category on the test set.
 
-The macro F1 improvement from 0.4166 to 0.4688 suggests that explicitly
-modeling tag transitions is beneficial for this token-level PII detection
-task.
+| Entity Type | Most Frequent F1 | HMM + Viterbi F1 |
+|---|---:|---:|
+| ACCOUNT | 0.0591 | 0.0826 |
+| ADDRESS | 0.0235 | 0.4939 |
+| COMPANY | 0.2309 | 0.4493 |
+| DATE | 0.4051 | 0.5687 |
+| EMAIL | 0.4142 | 0.3804 |
+| ID | 0.0819 | 0.0814 |
+| NAME | 0.2843 | 0.6183 |
+| PHONE | 0.2462 | 0.3486 |
 
-Nevertheless, performance remains uneven across entity categories.
-Future work should focus on improving phone, email, account, and ID
-detection, while evaluating changes using the validation split.
+### 10.1 Per-Type Interpretation
 
-The test set should remain reserved for final model comparison rather
-than repeated hyperparameter tuning.
+The HMM model improves F1 for most entity categories.
+
+The largest improvements are observed for:
+
+- ADDRESS
+- NAME
+- COMPANY
+- DATE
+
+NAME achieves the highest HMM entity-level F1 score at approximately 0.6183.
+
+However, performance remains limited for ACCOUNT and ID. These categories may be more difficult to identify because of their token patterns and contextual characteristics.
+
+The HMM model also performs slightly worse than the Most Frequent baseline for EMAIL and ID. This indicates that the HMM approach does not improve every entity category equally.
+
+These results suggest that further improvements may require better token representations, richer contextual features, or more advanced sequence-labeling models.
+
+## 11. Limitations
+
+The implemented models provide useful baselines, but they have several limitations.
+
+### Most Frequent Baseline
+
+- Does not consider token context.
+- Does not model relationships between consecutive tags.
+- Relies heavily on token frequency.
+- Can produce incorrect entity boundaries.
+
+### HMM + Viterbi
+
+- Uses a first-order Markov assumption.
+- Has limited contextual representation.
+- Relies on token-level emission probabilities.
+- May struggle with rare or previously unseen entity patterns.
+- Laplace smoothing helps with unseen events but does not solve data sparsity completely.
+
+Both models are statistical approaches and do not have the contextual representation capabilities of modern neural sequence-labeling models.
+
+## 12. Conclusion
+
+The experiments demonstrate that the HMM with Viterbi decoding performs better than the Most Frequent baseline in overall token-level and entity-level evaluation.
+
+Although both models achieve high token accuracy, entity-level evaluation reveals a substantial difference in their ability to identify complete entities correctly.
+
+The HMM model achieves a test entity-level F1 score of approximately 0.5208, compared with 0.2653 for the Most Frequent baseline.
+
+This improvement indicates that modeling transition relationships between BIO tags is valuable for sequence labeling tasks.
+
+Nevertheless, performance varies across entity categories. ACCOUNT and ID remain particularly challenging, while EMAIL shows a small decrease compared with the Most Frequent baseline.
+
+Overall, the results establish the HMM with Viterbi decoding as a stronger statistical baseline for this NER task, while also highlighting the limitations of traditional probabilistic models for contextual entity recognition.
