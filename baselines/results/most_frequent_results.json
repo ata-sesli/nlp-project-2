@@ -1,6 +1,7 @@
 {
   "model": "Most Frequent Token Tag Baseline",
   "prediction_unit": "token",
+  "prediction_format": "JSONL with id, doc_id and pred fields",
   "fallback_tag": "O",
   "training_chunks": 30545,
   "validation_chunks": 3389,

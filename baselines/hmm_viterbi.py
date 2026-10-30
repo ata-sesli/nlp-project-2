@@ -15,6 +15,7 @@ from sklearn.metrics import classification_report
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "dataset" / "data"
 RESULTS_DIR = ROOT / "baselines" / "results"
+PREDICTIONS_DIR = ROOT / "baselines" / "predictions"
 
 TRAIN_PATH = DATA_DIR / "train.jsonl.gz"
 VAL_PATH = DATA_DIR / "val.jsonl.gz"
@@ -27,7 +28,7 @@ ALPHA = 0.1
 
 
 # --------------------------------------------------
-# Data loading
+# Data loading and prediction export
 # --------------------------------------------------
 
 def load_jsonl_gz(path):
@@ -41,13 +42,31 @@ def load_jsonl_gz(path):
     return rows
 
 
-def flatten_tags(sequences):
-    """Flatten tag sequences for token-level evaluation."""
-    return [
-        tag
-        for sequence in sequences
-        for tag in sequence["tags"]
-    ]
+def save_predictions(rows, predictions, filename):
+    """Save predictions using the shared JSONL format."""
+    output_path = PREDICTIONS_DIR / filename
+
+    if len(rows) != len(predictions):
+        raise ValueError("Prediction sequence count mismatch.")
+
+    with output_path.open("w", encoding="utf-8") as file:
+        for row, predicted_tags in zip(rows, predictions):
+            if len(row["tokens"]) != len(predicted_tags):
+                raise ValueError(
+                    f"Prediction length mismatch: {row.get('id')}"
+                )
+
+            record = {
+                "id": row["id"],
+                "doc_id": row.get("doc_id"),
+                "pred": predicted_tags,
+            }
+
+            file.write(
+                json.dumps(record, ensure_ascii=False) + "\n"
+            )
+
+    print(f"Predictions saved to: {output_path}")
 
 
 # --------------------------------------------------
@@ -264,6 +283,7 @@ def evaluate(model, sequences, split_name):
     """Evaluate token-level classification performance."""
     true_tags = []
     predicted_tags = []
+    all_predictions = []
 
     for sequence in sequences:
         tokens = sequence["tokens"]
@@ -278,6 +298,7 @@ def evaluate(model, sequences, split_name):
 
         true_tags.extend(tags)
         predicted_tags.extend(predictions)
+        all_predictions.append(predictions)
 
     report = classification_report(
         true_tags,
@@ -297,12 +318,14 @@ def evaluate(model, sequences, split_name):
         )
     )
 
-    return {
+    results = {
         "split": split_name,
         "chunks": len(sequences),
         "tokens": len(true_tags),
         "classification_report": report,
     }
+
+    return results, all_predictions
 
 
 # --------------------------------------------------
@@ -339,14 +362,33 @@ def main():
     model = HMMTagger(labels=labels)
     model.fit(train_data)
 
-    val_results = evaluate(model, val_data, "Validation")
-    test_results = evaluate(model, test_data, "Test")
+    val_results, val_predictions = evaluate(
+        model, val_data, "Validation"
+    )
+
+    test_results, test_predictions = evaluate(
+        model, test_data, "Test"
+    )
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
+
+    save_predictions(
+        val_data,
+        val_predictions,
+        "hmm_viterbi_validation.jsonl",
+    )
+
+    save_predictions(
+        test_data,
+        test_predictions,
+        "hmm_viterbi_test.jsonl",
+    )
 
     output = {
         "model": "HMM + Viterbi",
         "prediction_unit": "token",
+        "prediction_format": "JSONL with id, doc_id and pred fields",
         "smoothing_alpha": ALPHA,
         "bio_transition_constraints": True,
         "train_chunks": len(train_data),

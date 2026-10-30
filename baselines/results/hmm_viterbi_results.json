@@ -1,6 +1,7 @@
 {
   "model": "HMM + Viterbi",
   "prediction_unit": "token",
+  "prediction_format": "JSONL with id, doc_id and pred fields",
   "smoothing_alpha": 0.1,
   "bio_transition_constraints": true,
   "train_chunks": 30545,

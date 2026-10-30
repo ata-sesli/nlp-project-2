@@ -1,0 +1,382 @@
+{
+  "validation": {
+    "Most Frequent": {
+      "overall": {
+        "precision": 0.220675944333996,
+        "recall": 0.29283306463432507,
+        "f1": 0.25168482710839574,
+        "true_positive": 3996,
+        "false_positive": 14112,
+        "false_negative": 9650,
+        "gold_entities": 13646,
+        "predicted_entities": 18108
+      },
+      "per_entity_type": {
+        "ACCOUNT": {
+          "precision": 0.13725490196078433,
+          "recall": 0.017811704834605598,
+          "f1": 0.03153153153153153,
+          "support": 393,
+          "predicted": 51,
+          "true_positive": 7,
+          "false_positive": 44,
+          "false_negative": 386
+        },
+        "ADDRESS": {
+          "precision": 0.01286469101768895,
+          "recall": 0.03650586701434159,
+          "f1": 0.019024970273483946,
+          "support": 1534,
+          "predicted": 4353,
+          "true_positive": 56,
+          "false_positive": 4297,
+          "false_negative": 1478
+        },
+        "COMPANY": {
+          "precision": 0.2105843439911797,
+          "recall": 0.2115171650055371,
+          "f1": 0.21104972375690606,
+          "support": 2709,
+          "predicted": 2721,
+          "true_positive": 573,
+          "false_positive": 2148,
+          "false_negative": 2136
+        },
+        "DATE": {
+          "precision": 0.3211074639646068,
+          "recall": 0.43757292882147025,
+          "f1": 0.370400856037534,
+          "support": 5142,
+          "predicted": 7007,
+          "true_positive": 2250,
+          "false_positive": 4757,
+          "false_negative": 2892
+        },
+        "EMAIL": {
+          "precision": 0.9464285714285714,
+          "recall": 0.26903553299492383,
+          "f1": 0.41897233201581024,
+          "support": 197,
+          "predicted": 56,
+          "true_positive": 53,
+          "false_positive": 3,
+          "false_negative": 144
+        },
+        "ID": {
+          "precision": 0.7777777777777778,
+          "recall": 0.03167420814479638,
+          "f1": 0.0608695652173913,
+          "support": 442,
+          "predicted": 18,
+          "true_positive": 14,
+          "false_positive": 4,
+          "false_negative": 428
+        },
+        "NAME": {
+          "precision": 0.26832641770401106,
+          "recall": 0.3267093297406534,
+          "f1": 0.29465370595382745,
+          "support": 2969,
+          "predicted": 3615,
+          "true_positive": 970,
+          "false_positive": 2645,
+          "false_negative": 1999
+        },
+        "PHONE": {
+          "precision": 0.25435540069686413,
+          "recall": 0.28076923076923077,
+          "f1": 0.26691042047531993,
+          "support": 260,
+          "predicted": 287,
+          "true_positive": 73,
+          "false_positive": 214,
+          "false_negative": 187
+        }
+      }
+    },
+    "HMM + Viterbi": {
+      "overall": {
+        "precision": 0.5378502375880715,
+        "recall": 0.4810933606917778,
+        "f1": 0.5078910722574657,
+        "true_positive": 6565,
+        "false_positive": 5641,
+        "false_negative": 7081,
+        "gold_entities": 13646,
+        "predicted_entities": 12206
+      },
+      "per_entity_type": {
+        "ACCOUNT": {
+          "precision": 0.14285714285714285,
+          "recall": 0.02544529262086514,
+          "f1": 0.04319654427645788,
+          "support": 393,
+          "predicted": 70,
+          "true_positive": 10,
+          "false_positive": 60,
+          "false_negative": 383
+        },
+        "ADDRESS": {
+          "precision": 0.44331004836109617,
+          "recall": 0.5378096479791395,
+          "f1": 0.48600883652430044,
+          "support": 1534,
+          "predicted": 1861,
+          "true_positive": 825,
+          "false_positive": 1036,
+          "false_negative": 709
+        },
+        "COMPANY": {
+          "precision": 0.46296296296296297,
+          "recall": 0.3968253968253968,
+          "f1": 0.42735042735042733,
+          "support": 2709,
+          "predicted": 2322,
+          "true_positive": 1075,
+          "false_positive": 1247,
+          "false_negative": 1634
+        },
+        "DATE": {
+          "precision": 0.5773889636608345,
+          "recall": 0.5005834305717619,
+          "f1": 0.53625,
+          "support": 5142,
+          "predicted": 4458,
+          "true_positive": 2574,
+          "false_positive": 1884,
+          "false_negative": 2568
+        },
+        "EMAIL": {
+          "precision": 0.75,
+          "recall": 0.27411167512690354,
+          "f1": 0.40148698884758366,
+          "support": 197,
+          "predicted": 72,
+          "true_positive": 54,
+          "false_positive": 18,
+          "false_negative": 143
+        },
+        "ID": {
+          "precision": 0.64,
+          "recall": 0.03619909502262444,
+          "f1": 0.06852248394004283,
+          "support": 442,
+          "predicted": 25,
+          "true_positive": 16,
+          "false_positive": 9,
+          "false_negative": 426
+        },
+        "NAME": {
+          "precision": 0.6462747778537252,
+          "recall": 0.6369147861232738,
+          "f1": 0.6415606446140797,
+          "support": 2969,
+          "predicted": 2926,
+          "true_positive": 1891,
+          "false_positive": 1035,
+          "false_negative": 1078
+        },
+        "PHONE": {
+          "precision": 0.2542372881355932,
+          "recall": 0.46153846153846156,
+          "f1": 0.3278688524590164,
+          "support": 260,
+          "predicted": 472,
+          "true_positive": 120,
+          "false_positive": 352,
+          "false_negative": 140
+        }
+      }
+    }
+  },
+  "test": {
+    "Most Frequent": {
+      "overall": {
+        "precision": 0.23179062830751468,
+        "recall": 0.31001866031786884,
+        "f1": 0.26525724667602607,
+        "true_positive": 4818,
+        "false_positive": 15968,
+        "false_negative": 10723,
+        "gold_entities": 15541,
+        "predicted_entities": 20786
+      },
+      "per_entity_type": {
+        "ACCOUNT": {
+          "precision": 0.3469387755102041,
+          "recall": 0.03231939163498099,
+          "f1": 0.05913043478260869,
+          "support": 526,
+          "predicted": 49,
+          "true_positive": 17,
+          "false_positive": 32,
+          "false_negative": 509
+        },
+        "ADDRESS": {
+          "precision": 0.01615182717544922,
+          "recall": 0.04310344827586207,
+          "f1": 0.02349831105889264,
+          "support": 1856,
+          "predicted": 4953,
+          "true_positive": 80,
+          "false_positive": 4873,
+          "false_negative": 1776
+        },
+        "COMPANY": {
+          "precision": 0.22087227414330218,
+          "recall": 0.24181446111869032,
+          "f1": 0.230869423640508,
+          "support": 2932,
+          "predicted": 3210,
+          "true_positive": 709,
+          "false_positive": 2501,
+          "false_negative": 2223
+        },
+        "DATE": {
+          "precision": 0.3507558288496029,
+          "recall": 0.4793417366946779,
+          "f1": 0.40508951028258616,
+          "support": 5712,
+          "predicted": 7806,
+          "true_positive": 2738,
+          "false_positive": 5068,
+          "false_negative": 2974
+        },
+        "EMAIL": {
+          "precision": 0.9411764705882353,
+          "recall": 0.26556016597510373,
+          "f1": 0.41423948220064727,
+          "support": 241,
+          "predicted": 68,
+          "true_positive": 64,
+          "false_positive": 4,
+          "false_negative": 177
+        },
+        "ID": {
+          "precision": 0.9130434782608695,
+          "recall": 0.04285714285714286,
+          "f1": 0.08187134502923976,
+          "support": 490,
+          "predicted": 23,
+          "true_positive": 21,
+          "false_positive": 2,
+          "false_negative": 469
+        },
+        "NAME": {
+          "precision": 0.2563505010487066,
+          "recall": 0.3191180736872643,
+          "f1": 0.28431119152235723,
+          "support": 3447,
+          "predicted": 4291,
+          "true_positive": 1100,
+          "false_positive": 3191,
+          "false_negative": 2347
+        },
+        "PHONE": {
+          "precision": 0.23056994818652848,
+          "recall": 0.26409495548961426,
+          "f1": 0.24619640387275243,
+          "support": 337,
+          "predicted": 386,
+          "true_positive": 89,
+          "false_positive": 297,
+          "false_negative": 248
+        }
+      }
+    },
+    "HMM + Viterbi": {
+      "overall": {
+        "precision": 0.5468639388361886,
+        "recall": 0.4970722604722991,
+        "f1": 0.5207806653857822,
+        "true_positive": 7725,
+        "false_positive": 6401,
+        "false_negative": 7816,
+        "gold_entities": 15541,
+        "predicted_entities": 14126
+      },
+      "per_entity_type": {
+        "ACCOUNT": {
+          "precision": 0.31645569620253167,
+          "recall": 0.04752851711026616,
+          "f1": 0.08264462809917354,
+          "support": 526,
+          "predicted": 79,
+          "true_positive": 25,
+          "false_positive": 54,
+          "false_negative": 501
+        },
+        "ADDRESS": {
+          "precision": 0.45751033532384017,
+          "recall": 0.5366379310344828,
+          "f1": 0.49392511777832876,
+          "support": 1856,
+          "predicted": 2177,
+          "true_positive": 996,
+          "false_positive": 1181,
+          "false_negative": 860
+        },
+        "COMPANY": {
+          "precision": 0.4720240330454375,
+          "recall": 0.42871759890859484,
+          "f1": 0.4493297587131368,
+          "support": 2932,
+          "predicted": 2663,
+          "true_positive": 1257,
+          "false_positive": 1406,
+          "false_negative": 1675
+        },
+        "DATE": {
+          "precision": 0.5998445998445998,
+          "recall": 0.5406162464985994,
+          "f1": 0.5686924493554328,
+          "support": 5712,
+          "predicted": 5148,
+          "true_positive": 3088,
+          "false_positive": 2060,
+          "false_negative": 2624
+        },
+        "EMAIL": {
+          "precision": 0.7294117647058823,
+          "recall": 0.2572614107883817,
+          "f1": 0.38036809815950917,
+          "support": 241,
+          "predicted": 85,
+          "true_positive": 62,
+          "false_positive": 23,
+          "false_negative": 179
+        },
+        "ID": {
+          "precision": 0.8076923076923077,
+          "recall": 0.04285714285714286,
+          "f1": 0.08139534883720931,
+          "support": 490,
+          "predicted": 26,
+          "true_positive": 21,
+          "false_positive": 5,
+          "false_negative": 469
+        },
+        "NAME": {
+          "precision": 0.619324796274738,
+          "recall": 0.6173484189149986,
+          "f1": 0.6183350283306697,
+          "support": 3447,
+          "predicted": 3436,
+          "true_positive": 2128,
+          "false_positive": 1308,
+          "false_negative": 1319
+        },
+        "PHONE": {
+          "precision": 0.2890625,
+          "recall": 0.4391691394658754,
+          "f1": 0.3486454652532391,
+          "support": 337,
+          "predicted": 512,
+          "true_positive": 148,
+          "false_positive": 364,
+          "false_negative": 189
+        }
+      }
+    }
+  }
+}
