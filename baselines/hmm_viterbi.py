@@ -1,6 +1,7 @@
 
 import gzip
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from sklearn.metrics import classification_report
 # --------------------------------------------------
 
 ROOT = Path(__file__).resolve().parents[1]
+
 DATA_DIR = ROOT / "dataset" / "data"
 RESULTS_DIR = ROOT / "baselines" / "results"
 PREDICTIONS_DIR = ROOT / "baselines" / "predictions"
@@ -25,6 +27,10 @@ LABELS_PATH = DATA_DIR / "labels.json"
 RESULTS_PATH = RESULTS_DIR / "hmm_viterbi_results.json"
 
 ALPHA = 0.1
+MIN_WORD_FREQUENCY = 2
+
+SHAPE_PREFIX = "__SHAPE_"
+UNKNOWN_SHAPE = "__SHAPE_UNKNOWN__"
 
 
 # --------------------------------------------------
@@ -44,6 +50,8 @@ def load_jsonl_gz(path):
 
 def save_predictions(rows, predictions, filename):
     """Save predictions using the shared JSONL format."""
+    PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
+
     output_path = PREDICTIONS_DIR / filename
 
     if len(rows) != len(predictions):
@@ -70,15 +78,118 @@ def save_predictions(rows, predictions, filename):
 
 
 # --------------------------------------------------
+# Word-shape classification
+# --------------------------------------------------
+
+def get_word_shape(token):
+    """
+    Map a token to a generalized word-shape class.
+
+    Examples:
+        Serhat                  -> TITLECASE
+        ISTANBUL                -> UPPERCASE
+        istanbul                -> LOWERCASE
+        123456                  -> NUMBER
+        serhat@example.com      -> EMAIL
+        TR120006200000000000001 -> IBAN
+        +905321234567           -> PHONE
+    """
+    if not token:
+        return UNKNOWN_SHAPE
+
+    stripped = token.strip()
+
+    if not stripped:
+        return UNKNOWN_SHAPE
+
+    # Email addresses.
+    if re.fullmatch(
+        r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+"
+        r"@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+",
+        stripped,
+    ):
+        return SHAPE_PREFIX + "EMAIL__"
+
+    # IBAN-like strings.
+    compact = re.sub(r"\s+", "", stripped).upper()
+
+    if re.fullmatch(r"[A-Z]{2}\d{2}[A-Z0-9]{11,30}", compact):
+        return SHAPE_PREFIX + "IBAN__"
+
+    # Phone-like strings.
+    digits = re.sub(r"\D", "", stripped)
+
+    if (
+        10 <= len(digits) <= 15
+        and re.fullmatch(r"[+()\-\s./\d]+", stripped)
+    ):
+        return SHAPE_PREFIX + "PHONE__"
+
+    # Numeric values, including decimals and signed numbers.
+    if re.fullmatch(r"[+-]?\d+(?:[.,]\d+)?", stripped):
+        return SHAPE_PREFIX + "NUMBER__"
+
+    # URLs.
+    if re.fullmatch(
+        r"(?:https?://)?(?:www\.)?[A-Za-z0-9-]+"
+        r"(?:\.[A-Za-z0-9-]+)+(?:/[^\s]*)?",
+        stripped,
+        flags=re.IGNORECASE,
+    ):
+        return SHAPE_PREFIX + "URL__"
+
+    # Uppercase tokens.
+    if stripped.isupper() and any(char.isalpha() for char in stripped):
+        return SHAPE_PREFIX + "UPPERCASE__"
+
+    # Lowercase tokens.
+    if stripped.islower() and any(char.isalpha() for char in stripped):
+        return SHAPE_PREFIX + "LOWERCASE__"
+
+    # Titlecase tokens.
+    if (
+        len(stripped) > 1
+        and stripped[0].isupper()
+        and stripped[1:].islower()
+    ):
+        return SHAPE_PREFIX + "TITLECASE__"
+
+    # Character-level shape for mixed tokens.
+    shape = []
+
+    for char in stripped:
+        if char.isupper():
+            shape.append("X")
+        elif char.islower():
+            shape.append("x")
+        elif char.isdigit():
+            shape.append("d")
+        else:
+            shape.append(char)
+
+    # Limit the number of distinct classes for long tokens.
+    if len(shape) > 12:
+        shape = shape[:6] + ["*"] + shape[-3:]
+
+    return SHAPE_PREFIX + "".join(shape) + "__"
+
+
+# --------------------------------------------------
 # HMM with Viterbi decoding
 # --------------------------------------------------
 
 class HMMTagger:
-    """First-order HMM with Laplace smoothing and BIO constraints."""
+    """First-order HMM with add-k smoothing, word shapes and BIO constraints."""
 
-    def __init__(self, labels, alpha=ALPHA):
+    def __init__(
+        self,
+        labels,
+        alpha=ALPHA,
+        min_word_frequency=MIN_WORD_FREQUENCY,
+    ):
         self.labels = labels
         self.alpha = alpha
+        self.min_word_frequency = min_word_frequency
 
         self.tag_to_id = {
             tag: index for index, tag in enumerate(labels)
@@ -91,11 +202,15 @@ class HMMTagger:
         self.vocabulary = {}
         self.unknown_token_id = None
 
+        self.word_frequencies = Counter()
+        self.shape_classes = set()
+
     @staticmethod
     def is_valid_bio_transition(previous_tag, current_tag):
         """Check whether a BIO transition is valid."""
         if current_tag.startswith("I-"):
             entity_type = current_tag[2:]
+
             return previous_tag in {
                 f"B-{entity_type}",
                 f"I-{entity_type}",
@@ -103,19 +218,56 @@ class HMMTagger:
 
         return True
 
+    def get_feature(self, token):
+        """
+        Keep frequent words as lexical features.
+        Map rare and unseen words to their word-shape classes.
+        """
+        normalized = token.lower()
+
+        if (
+            self.word_frequencies.get(normalized, 0)
+            >= self.min_word_frequency
+        ):
+            return normalized
+
+        return get_word_shape(token)
+
     def fit(self, sequences):
         """Estimate HMM start, transition and emission probabilities."""
         num_tags = len(self.labels)
 
-        start_counts = np.zeros(num_tags, dtype=np.float64)
+        start_counts = np.zeros(
+            num_tags,
+            dtype=np.float64,
+        )
+
         transition_counts = np.zeros(
-            (num_tags, num_tags), dtype=np.float64
+            (num_tags, num_tags),
+            dtype=np.float64,
         )
 
         emission_counts = defaultdict(Counter)
-        tag_counts = np.zeros(num_tags, dtype=np.float64)
-        vocabulary = set()
 
+        tag_counts = np.zeros(
+            num_tags,
+            dtype=np.float64,
+        )
+
+        # First pass: calculate word frequencies.
+        for sequence in sequences:
+            tokens = sequence["tokens"]
+            tags = sequence["tags"]
+
+            if len(tokens) != len(tags):
+                raise ValueError(
+                    f"Token/tag length mismatch: {sequence.get('id')}"
+                )
+
+            for token in tokens:
+                self.word_frequencies[token.lower()] += 1
+
+        # Second pass: collect HMM statistics.
         for sequence in sequences:
             tokens = sequence["tokens"]
             tags = sequence["tags"]
@@ -123,67 +275,128 @@ class HMMTagger:
             if not tokens:
                 continue
 
-            if len(tokens) != len(tags):
-                raise ValueError(
-                    f"Token/tag length mismatch: {sequence.get('id')}"
-                )
+            tag_ids = []
 
-            normalized_tokens = [token.lower() for token in tokens]
-            tag_ids = [self.tag_to_id[tag] for tag in tags]
+            for tag in tags:
+                if tag not in self.tag_to_id:
+                    raise ValueError(f"Unknown label: {tag}")
+
+                tag_ids.append(self.tag_to_id[tag])
 
             start_counts[tag_ids[0]] += 1
 
-            for token, tag_id in zip(normalized_tokens, tag_ids):
-                emission_counts[tag_id][token] += 1
+            for token, tag_id in zip(tokens, tag_ids):
+                feature = self.get_feature(token)
+
+                emission_counts[tag_id][feature] += 1
                 tag_counts[tag_id] += 1
-                vocabulary.add(token)
+
+                if feature.startswith(SHAPE_PREFIX):
+                    self.shape_classes.add(feature)
 
             for previous, current in zip(tag_ids, tag_ids[1:]):
                 transition_counts[previous, current] += 1
 
+        # Build the feature vocabulary.
+        vocabulary = set()
+
+        for tag_counter in emission_counts.values():
+            vocabulary.update(tag_counter.keys())
+
+        vocabulary.add(UNKNOWN_SHAPE)
+
         self.vocabulary = {
-            token: index
-            for index, token in enumerate(sorted(vocabulary))
+            feature: index
+            for index, feature in enumerate(sorted(vocabulary))
         }
 
-        self.unknown_token_id = len(self.vocabulary)
-        vocab_size = len(self.vocabulary) + 1
+        self.unknown_token_id = self.vocabulary[UNKNOWN_SHAPE]
+        vocab_size = len(self.vocabulary)
 
-        # Start probabilities with smoothing.
-        start_probs = (
-            start_counts + self.alpha
-        ) / (
-            start_counts.sum() + self.alpha * num_tags
+        # --------------------------------------------------
+        # Start probabilities
+        # --------------------------------------------------
+
+        # BIO sequences cannot start with an I- tag.
+        valid_start_mask = np.array(
+            [
+                not tag.startswith("I-")
+                for tag in self.labels
+            ],
+            dtype=bool,
         )
 
-        self.start_log_probs = np.log(start_probs)
+        start_counts[~valid_start_mask] = 0.0
 
-        # Transition probabilities with smoothing.
-        transition_probs = (
-            transition_counts + self.alpha
-        ) / (
-            transition_counts.sum(axis=1, keepdims=True)
-            + self.alpha * num_tags
+        start_denominator = (
+            start_counts.sum()
+            + self.alpha * valid_start_mask.sum()
         )
 
-        self.transition_log_probs = np.log(transition_probs)
+        start_probs = np.zeros(
+            num_tags,
+            dtype=np.float64,
+        )
 
-        # Disallow transitions that violate BIO rules.
+        start_probs[valid_start_mask] = (
+            start_counts[valid_start_mask] + self.alpha
+        ) / start_denominator
+
+        self.start_log_probs = np.full(
+            num_tags,
+            -np.inf,
+            dtype=np.float64,
+        )
+
+        self.start_log_probs[valid_start_mask] = np.log(
+            start_probs[valid_start_mask]
+        )
+
+        # --------------------------------------------------
+        # Transition probabilities
+        # --------------------------------------------------
+
+        self.transition_log_probs = np.full(
+            (num_tags, num_tags),
+            -np.inf,
+            dtype=np.float64,
+        )
+
         for previous_id, previous_tag in enumerate(self.labels):
-            for current_id, current_tag in enumerate(self.labels):
-                if not self.is_valid_bio_transition(
-                    previous_tag, current_tag
-                ):
-                    self.transition_log_probs[
-                        previous_id, current_id
-                    ] = -np.inf
+            valid_current_ids = [
+                current_id
+                for current_id, current_tag in enumerate(self.labels)
+                if self.is_valid_bio_transition(
+                    previous_tag,
+                    current_tag,
+                )
+            ]
 
-        # Disallow starting a sequence with an inside-entity tag.
-        for tag_id, tag in enumerate(self.labels):
-            if tag.startswith("I-"):
-                self.start_log_probs[tag_id] = -np.inf
+            denominator = (
+                transition_counts[
+                    previous_id,
+                    valid_current_ids,
+                ].sum()
+                + self.alpha * len(valid_current_ids)
+            )
 
-        # Emission log probabilities.
+            probabilities = (
+                transition_counts[
+                    previous_id,
+                    valid_current_ids,
+                ]
+                + self.alpha
+            ) / denominator
+
+            self.transition_log_probs[
+                previous_id,
+                valid_current_ids,
+            ] = np.log(probabilities)
+
+        # --------------------------------------------------
+        # Emission probabilities
+        # --------------------------------------------------
+
         self.emission_log_probs = np.full(
             (num_tags, vocab_size),
             -np.inf,
@@ -198,25 +411,32 @@ class HMMTagger:
             if denominator == 0:
                 continue
 
-            for token, count in emission_counts[tag_id].items():
-                token_id = self.vocabulary[token]
+            # Add-k smoothing:
+            # Every tag-feature pair receives a non-zero probability.
+            default_probability = self.alpha / denominator
+
+            self.emission_log_probs[tag_id, :] = np.log(
+                default_probability
+            )
+
+            # Replace smoothed defaults with observed emission counts.
+            for feature, count in emission_counts[tag_id].items():
+                feature_id = self.vocabulary[feature]
+
                 probability = (
                     count + self.alpha
                 ) / denominator
 
                 self.emission_log_probs[
-                    tag_id, token_id
+                    tag_id,
+                    feature_id,
                 ] = np.log(probability)
-
-            unknown_probability = self.alpha / denominator
-
-            self.emission_log_probs[
-                tag_id, self.unknown_token_id
-            ] = np.log(unknown_probability)
 
         print(f"Training sequences: {len(sequences)}")
         print(f"Number of tags: {num_tags}")
-        print(f"Vocabulary size: {len(self.vocabulary)}")
+        print(f"Vocabulary size: {vocab_size}")
+        print(f"Word-shape classes: {len(self.shape_classes)}")
+        print(f"Minimum word frequency: {self.min_word_frequency}")
         print("HMM training completed.")
 
     def predict(self, tokens):
@@ -230,12 +450,17 @@ class HMMTagger:
         num_tags = len(self.labels)
         num_tokens = len(tokens)
 
-        normalized_tokens = [token.lower() for token in tokens]
+        token_ids = []
 
-        token_ids = [
-            self.vocabulary.get(token, self.unknown_token_id)
-            for token in normalized_tokens
-        ]
+        for token in tokens:
+            feature = self.get_feature(token)
+
+            token_id = self.vocabulary.get(
+                feature,
+                self.unknown_token_id,
+            )
+
+            token_ids.append(token_id)
 
         emissions = self.emission_log_probs[:, token_ids].T
 
@@ -250,29 +475,54 @@ class HMMTagger:
             dtype=np.int32,
         )
 
+        # Initialization.
         scores[0] = self.start_log_probs + emissions[0]
 
+        if np.all(np.isneginf(scores[0])):
+            raise RuntimeError(
+                "Viterbi decoding failed at the first token."
+            )
+
+        # Recursion.
         for t in range(1, num_tokens):
             candidates = (
                 scores[t - 1][:, None]
                 + self.transition_log_probs
             )
 
-            backpointers[t] = np.argmax(candidates, axis=0)
-
-            scores[t] = (
-                np.max(candidates, axis=0) + emissions[t]
+            backpointers[t] = np.argmax(
+                candidates,
+                axis=0,
             )
 
-        best_path = np.zeros(num_tokens, dtype=np.int32)
+            scores[t] = (
+                np.max(candidates, axis=0)
+                + emissions[t]
+            )
+
+        if np.all(np.isneginf(scores[-1])):
+            raise RuntimeError(
+                "Viterbi decoding failed: no valid tag sequence."
+            )
+
+        # Termination and backtracking.
+        best_path = np.zeros(
+            num_tokens,
+            dtype=np.int32,
+        )
+
         best_path[-1] = int(np.argmax(scores[-1]))
 
         for t in range(num_tokens - 2, -1, -1):
             best_path[t] = backpointers[
-                t + 1, best_path[t + 1]
+                t + 1,
+                best_path[t + 1],
             ]
 
-        return [self.labels[tag_id] for tag_id in best_path]
+        return [
+            self.labels[tag_id]
+            for tag_id in best_path
+        ]
 
 
 # --------------------------------------------------
@@ -309,6 +559,7 @@ def evaluate(model, sequences, split_name):
     )
 
     print(f"\n{split_name} results")
+
     print(
         classification_report(
             true_tags,
@@ -333,9 +584,16 @@ def evaluate(model, sequences, split_name):
 # --------------------------------------------------
 
 def main():
-    for path in [TRAIN_PATH, VAL_PATH, TEST_PATH, LABELS_PATH]:
+    for path in [
+        TRAIN_PATH,
+        VAL_PATH,
+        TEST_PATH,
+        LABELS_PATH,
+    ]:
         if not path.exists():
-            raise FileNotFoundError(f"Required file not found: {path}")
+            raise FileNotFoundError(
+                f"Required file not found: {path}"
+            )
 
     train_data = load_jsonl_gz(TRAIN_PATH)
     val_data = load_jsonl_gz(VAL_PATH)
@@ -344,11 +602,12 @@ def main():
     with open(LABELS_PATH, "r", encoding="utf-8") as file:
         label_data = json.load(file)
 
-    # Support either a JSON list or a dictionary containing labels.
     if isinstance(label_data, list):
         labels = label_data
+
     elif isinstance(label_data, dict) and "labels" in label_data:
         labels = label_data["labels"]
+
     else:
         raise ValueError(
             "Unexpected labels.json format. "
@@ -359,19 +618,23 @@ def main():
     print(f"Validation chunks: {len(val_data)}")
     print(f"Test chunks: {len(test_data)}")
 
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
+
     model = HMMTagger(labels=labels)
     model.fit(train_data)
 
     val_results, val_predictions = evaluate(
-        model, val_data, "Validation"
+        model,
+        val_data,
+        "Validation",
     )
 
     test_results, test_predictions = evaluate(
-        model, test_data, "Test"
+        model,
+        test_data,
+        "Test",
     )
-
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    PREDICTIONS_DIR.mkdir(parents=True, exist_ok=True)
 
     save_predictions(
         val_data,
@@ -390,6 +653,9 @@ def main():
         "prediction_unit": "token",
         "prediction_format": "JSONL with id, doc_id and pred fields",
         "smoothing_alpha": ALPHA,
+        "minimum_word_frequency": MIN_WORD_FREQUENCY,
+        "word_shape_features": True,
+        "word_shape_classes": sorted(model.shape_classes),
         "bio_transition_constraints": True,
         "train_chunks": len(train_data),
         "validation": val_results,
@@ -397,7 +663,12 @@ def main():
     }
 
     with open(RESULTS_PATH, "w", encoding="utf-8") as file:
-        json.dump(output, file, indent=2, ensure_ascii=False)
+        json.dump(
+            output,
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
 
     print(f"\nResults saved to: {RESULTS_PATH}")
 
