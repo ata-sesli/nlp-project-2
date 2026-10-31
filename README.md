@@ -173,7 +173,7 @@ that overlaps no gold entity is invented.
 README.md          this file
 LICENSE            Apache-2.0
 requirements.txt   Python dependencies
-dataset/           prepare_dataset.py, data/ (train, val, test, labels.json, REPORT.md)
+dataset/           prepare_dataset.py, inspect_dataset.py, data/ (train, val, test, labels.json, REPORT.md)
 baselines/         most_frequent.py, hmm_viterbi.py, predictions/, results/, ANALYSIS.md
 svm_crf/           features.py, svm_ner.py, crf_ner.py, predictions/, results/
 bilstm_crf/        train_bilstm_crf.py, predictions/, results/
