@@ -8,8 +8,10 @@ Writes to benchmark/results/:
     summary.csv         main table (entity P/R/F1, macro F1, token accuracy, missed PII)
     per_type_f1.csv     entity F1 per PII type
     error_types.csv     error counts per model
+    confusion_matrix.csv  word counts per gold and predicted type, per model
     results.md          the test tables in Markdown, for the README
     f1_by_model.png, per_type_f1.png, error_types.png   test split charts
+    confusion_matrix.png  test confusion matrix of the main model (BERT)
 """
 
 import csv
@@ -53,6 +55,7 @@ MODELS = {
         "test": "bert/predictions/test.jsonl",
     },
 }
+MAIN_MODEL = "BERT"
 SPLITS = ["val", "test"]
 SUMMARY_COLUMNS = [
     "precision", "recall", "f1", "macro_f1", "token_accuracy", "missed_pii_rate",
@@ -120,6 +123,17 @@ def write_tables(results):
              *(scores["error_types"][e] for e in ERROR_TYPES)]
             for split in SPLITS
             for model, scores in results[split].items()
+        ],
+    )
+    confusion_types = list(next(iter(results["test"].values()))["confusion"])
+    write_csv(
+        RESULTS_DIR / "confusion_matrix.csv",
+        ["split", "model", "gold", *confusion_types],
+        [
+            [split, model, gold, *(row[p] for p in confusion_types)]
+            for split in SPLITS
+            for model, scores in results[split].items()
+            for gold, row in scores["confusion"].items()
         ],
     )
 
@@ -211,6 +225,36 @@ def plot_errors(test):
     plt.close(fig)
 
 
+def plot_confusion(test):
+    confusion = test[MAIN_MODEL]["confusion"]
+    types = list(confusion)
+    # Each row in percent of that gold type's words.
+    grid = [
+        [100 * confusion[g][p] / sum(confusion[g].values()) for p in types]
+        for g in types
+    ]
+
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("blue", HEAT_RAMP)
+    # A power scale keeps the small off-diagonal shares visible.
+    norm = matplotlib.colors.PowerNorm(gamma=0.4, vmin=0, vmax=100)
+    fig, ax = plt.subplots(figsize=(8, 6.5), facecolor=SURFACE)
+    ax.imshow(grid, cmap=cmap, norm=norm, aspect="auto")
+    ax.set_xticks(range(len(types)), types, rotation=45, ha="right")
+    ax.set_yticks(range(len(types)), types)
+    ax.set_xlabel("predicted", color=TEXT_MUTED)
+    ax.set_ylabel("gold", color=TEXT_MUTED)
+    for i, row in enumerate(grid):
+        for j, value in enumerate(row):
+            if value >= 0.05:
+                ax.text(j, i, f"{value:.1f}", ha="center", va="center",
+                        color=TEXT if norm(value) < 0.6 else SURFACE, fontsize=9)
+    style(ax, f"Test confusion matrix, {MAIN_MODEL} (% of each gold type's words)")
+    ax.spines["bottom"].set_visible(False)
+    fig.tight_layout()
+    fig.savefig(RESULTS_DIR / "confusion_matrix.png", dpi=150)
+    plt.close(fig)
+
+
 def main():
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     results = run()
@@ -218,6 +262,7 @@ def main():
     plot_f1(results["test"])
     plot_per_type(results["test"])
     plot_errors(results["test"])
+    plot_confusion(results["test"])
     print(f"Results written to {RESULTS_DIR}")
 
 
