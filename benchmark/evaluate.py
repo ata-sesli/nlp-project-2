@@ -9,6 +9,7 @@ All models are scored here with the same rules, so their numbers are comparable:
 - PII recall and missed PII rate (1 - recall).
 - F1 per entity type.
 - Error types: boundary, type, boundary and type, missed, invented.
+- Confusion matrix of entity types per word (B- and I- merged, O for non-PII words).
 
 Usage:
     python benchmark/evaluate.py --split test --pred bert/predictions/test.jsonl
@@ -144,6 +145,22 @@ def count_error_types(gold_tags, pred_tags):
     return counts
 
 
+def entity_type(tag):
+    return tag if tag == "O" else tag[2:]
+
+
+def confusion_counts(gold_tags, pred_tags):
+    """Word counts as {gold type: {predicted type: count}}, B- and I- merged."""
+    types = list(dict.fromkeys(entity_type(tag) for tag in load_labels()))
+    counts = {gold: dict.fromkeys(types, 0) for gold in types}
+
+    for gold, pred in zip(gold_tags, pred_tags):
+        for g, p in zip(gold, pred):
+            counts[entity_type(g)][entity_type(p)] += 1
+
+    return counts
+
+
 def evaluate(gold_tags, pred_tags):
     """Compute every benchmark metric for one model on one split."""
     report = classification_report(
@@ -185,6 +202,7 @@ def evaluate(gold_tags, pred_tags):
         "missed_pii_rate": 1 - float(micro["recall"]),
         "per_type": per_type,
         "error_types": count_error_types(gold_tags, pred_tags),
+        "confusion": confusion_counts(gold_tags, pred_tags),
     }
 
 

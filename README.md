@@ -134,6 +134,12 @@ that overlaps no gold entity is invented.
 
 ![Test errors by type](benchmark/results/error_types.png)
 
+Confusion matrix of BERT per word (B- and I- tags merged; each row is the percentage of
+that gold type's words). The counts for every model are in
+`benchmark/results/confusion_matrix.csv`.
+
+![Test confusion matrix of BERT](benchmark/results/confusion_matrix.png)
+
 ### What the results show
 
 - **Accuracy hides the problem.** The most frequent baseline has 94.9% token accuracy but
@@ -156,14 +162,16 @@ that overlaps no gold entity is invented.
 - **Most errors are missed entities and wrong boundaries, not wrong types.** Type errors
   stay below 120 for every model, while missed entities are at least ten times more common.
   BERT misses the fewest entities but invents more than SVM, CRF and BiLSTM-CRF
-  (1,375 vs 982 to 1,111).
+  (1,375 vs 982 to 1,111). BERT's confusion matrix shows the same: 3.6% to 13.7% of each
+  PII type's words are tagged `O`, while at most 1.2% go to another PII type
+  (NAME → COMPANY).
 - **The task is not solved.** The best model still misses 12.3% of PII entities, no type
   reaches 0.93 F1 with BERT, and COMPANY (0.825) remains its hardest type.
 
 ### Limitations
 
 - The data is synthetic and English only.
-- About 14% of training entities do not line up with our word boundaries (for example
+- About 13% of entity spans (in train, val and test alike) do not line up with our word boundaries (for example
   `Schmidt's` when the span is `Schmidt`). These are tagged on the whole word, so some gold
   boundaries are slightly loose (see `dataset/data/REPORT.md`).
 

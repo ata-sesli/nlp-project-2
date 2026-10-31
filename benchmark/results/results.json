@@ -66,6 +66,107 @@
         "missed": 6177,
         "invented": 1054,
         "correct": 3549
+      },
+      "confusion": {
+        "O": {
+          "O": 439568,
+          "NAME": 217,
+          "COMPANY": 692,
+          "ADDRESS": 957,
+          "DATE": 1180,
+          "EMAIL": 2,
+          "PHONE": 43,
+          "ACCOUNT": 12,
+          "ID": 4
+        },
+        "NAME": {
+          "O": 2469,
+          "NAME": 3959,
+          "COMPANY": 89,
+          "ADDRESS": 520,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "COMPANY": {
+          "O": 4611,
+          "NAME": 133,
+          "COMPANY": 2779,
+          "ADDRESS": 198,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 4667,
+          "NAME": 437,
+          "COMPANY": 45,
+          "ADDRESS": 4065,
+          "DATE": 37,
+          "EMAIL": 0,
+          "PHONE": 15,
+          "ACCOUNT": 27,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 5324,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 24,
+          "DATE": 7057,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 172,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 54,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 326,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 104,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 240,
+          "ACCOUNT": 1,
+          "ID": 0
+        },
+        "ACCOUNT": {
+          "O": 372,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 44,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 13,
+          "ID": 0
+        },
+        "ID": {
+          "O": 428,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 14
+        }
       }
     },
     "HMM + Viterbi": {
@@ -134,6 +235,107 @@
         "missed": 2643,
         "invented": 1516,
         "correct": 7465
+      },
+      "confusion": {
+        "O": {
+          "O": 431043,
+          "NAME": 843,
+          "COMPANY": 1660,
+          "ADDRESS": 4169,
+          "DATE": 2695,
+          "EMAIL": 879,
+          "PHONE": 528,
+          "ACCOUNT": 852,
+          "ID": 6
+        },
+        "NAME": {
+          "O": 770,
+          "NAME": 5986,
+          "COMPANY": 86,
+          "ADDRESS": 156,
+          "DATE": 1,
+          "EMAIL": 26,
+          "PHONE": 1,
+          "ACCOUNT": 11,
+          "ID": 1
+        },
+        "COMPANY": {
+          "O": 2397,
+          "NAME": 110,
+          "COMPANY": 4938,
+          "ADDRESS": 226,
+          "DATE": 6,
+          "EMAIL": 10,
+          "PHONE": 6,
+          "ACCOUNT": 29,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 302,
+          "NAME": 58,
+          "COMPANY": 1,
+          "ADDRESS": 8909,
+          "DATE": 4,
+          "EMAIL": 4,
+          "PHONE": 1,
+          "ACCOUNT": 14,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 1503,
+          "NAME": 7,
+          "COMPANY": 2,
+          "ADDRESS": 13,
+          "DATE": 10815,
+          "EMAIL": 37,
+          "PHONE": 4,
+          "ACCOUNT": 26,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 61,
+          "NAME": 15,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 146,
+          "PHONE": 3,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 142,
+          "NAME": 0,
+          "COMPANY": 1,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 523,
+          "ACCOUNT": 4,
+          "ID": 0
+        },
+        "ACCOUNT": {
+          "O": 289,
+          "NAME": 6,
+          "COMPANY": 1,
+          "ADDRESS": 61,
+          "DATE": 5,
+          "EMAIL": 0,
+          "PHONE": 2,
+          "ACCOUNT": 67,
+          "ID": 1
+        },
+        "ID": {
+          "O": 355,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 20,
+          "DATE": 1,
+          "EMAIL": 5,
+          "PHONE": 2,
+          "ACCOUNT": 5,
+          "ID": 53
+        }
       }
     },
     "SVM": {
@@ -202,6 +404,107 @@
         "missed": 2178,
         "invented": 946,
         "correct": 9862
+      },
+      "confusion": {
+        "O": {
+          "O": 439358,
+          "NAME": 176,
+          "COMPANY": 795,
+          "ADDRESS": 1187,
+          "DATE": 993,
+          "EMAIL": 8,
+          "PHONE": 93,
+          "ACCOUNT": 37,
+          "ID": 28
+        },
+        "NAME": {
+          "O": 891,
+          "NAME": 6015,
+          "COMPANY": 80,
+          "ADDRESS": 47,
+          "DATE": 0,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 2
+        },
+        "COMPANY": {
+          "O": 2361,
+          "NAME": 73,
+          "COMPANY": 5257,
+          "ADDRESS": 27,
+          "DATE": 1,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "ADDRESS": {
+          "O": 1014,
+          "NAME": 33,
+          "COMPANY": 3,
+          "ADDRESS": 8240,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 1474,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 10920,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 12
+        },
+        "EMAIL": {
+          "O": 22,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 203,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 102,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 565,
+          "ACCOUNT": 1,
+          "ID": 1
+        },
+        "ACCOUNT": {
+          "O": 99,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 15,
+          "DATE": 5,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 306,
+          "ID": 5
+        },
+        "ID": {
+          "O": 102,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 4,
+          "EMAIL": 4,
+          "PHONE": 3,
+          "ACCOUNT": 24,
+          "ID": 303
+        }
       }
     },
     "CRF": {
@@ -270,6 +573,107 @@
         "missed": 1910,
         "invented": 902,
         "correct": 10708
+      },
+      "confusion": {
+        "O": {
+          "O": 439326,
+          "NAME": 270,
+          "COMPANY": 902,
+          "ADDRESS": 890,
+          "DATE": 1001,
+          "EMAIL": 86,
+          "PHONE": 113,
+          "ACCOUNT": 50,
+          "ID": 37
+        },
+        "NAME": {
+          "O": 788,
+          "NAME": 6106,
+          "COMPANY": 107,
+          "ADDRESS": 34,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 1
+        },
+        "COMPANY": {
+          "O": 2000,
+          "NAME": 67,
+          "COMPANY": 5648,
+          "ADDRESS": 4,
+          "DATE": 0,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "ADDRESS": {
+          "O": 972,
+          "NAME": 40,
+          "COMPANY": 11,
+          "ADDRESS": 8270,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 1211,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 40,
+          "DATE": 11148,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 1,
+          "ID": 7
+        },
+        "EMAIL": {
+          "O": 6,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 219,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 112,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 557,
+          "ACCOUNT": 1,
+          "ID": 1
+        },
+        "ACCOUNT": {
+          "O": 94,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 2,
+          "DATE": 4,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 327,
+          "ID": 4
+        },
+        "ID": {
+          "O": 103,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 4,
+          "PHONE": 1,
+          "ACCOUNT": 21,
+          "ID": 313
+        }
       }
     },
     "BiLSTM-CRF": {
@@ -338,6 +742,107 @@
         "missed": 1382,
         "invented": 1053,
         "correct": 11378
+      },
+      "confusion": {
+        "O": {
+          "O": 439057,
+          "NAME": 221,
+          "COMPANY": 1042,
+          "ADDRESS": 920,
+          "DATE": 1151,
+          "EMAIL": 26,
+          "PHONE": 154,
+          "ACCOUNT": 57,
+          "ID": 47
+        },
+        "NAME": {
+          "O": 631,
+          "NAME": 6274,
+          "COMPANY": 94,
+          "ADDRESS": 32,
+          "DATE": 1,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 1,
+          "ID": 3
+        },
+        "COMPANY": {
+          "O": 1373,
+          "NAME": 66,
+          "COMPANY": 6272,
+          "ADDRESS": 6,
+          "DATE": 0,
+          "EMAIL": 4,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "ADDRESS": {
+          "O": 372,
+          "NAME": 6,
+          "COMPANY": 1,
+          "ADDRESS": 8913,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "DATE": {
+          "O": 839,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 11564,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 0,
+          "ID": 2
+        },
+        "EMAIL": {
+          "O": 9,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 217,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 37,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 632,
+          "ACCOUNT": 0,
+          "ID": 2
+        },
+        "ACCOUNT": {
+          "O": 65,
+          "NAME": 1,
+          "COMPANY": 1,
+          "ADDRESS": 1,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 338,
+          "ID": 22
+        },
+        "ID": {
+          "O": 65,
+          "NAME": 3,
+          "COMPANY": 2,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 4,
+          "PHONE": 2,
+          "ACCOUNT": 14,
+          "ID": 352
+        }
       }
     },
     "BERT": {
@@ -406,6 +911,107 @@
         "missed": 1004,
         "invented": 1255,
         "correct": 11858
+      },
+      "confusion": {
+        "O": {
+          "O": 439258,
+          "NAME": 315,
+          "COMPANY": 1154,
+          "ADDRESS": 628,
+          "DATE": 1130,
+          "EMAIL": 14,
+          "PHONE": 105,
+          "ACCOUNT": 47,
+          "ID": 24
+        },
+        "NAME": {
+          "O": 483,
+          "NAME": 6452,
+          "COMPANY": 67,
+          "ADDRESS": 31,
+          "DATE": 0,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 1
+        },
+        "COMPANY": {
+          "O": 796,
+          "NAME": 32,
+          "COMPANY": 6893,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 438,
+          "NAME": 6,
+          "COMPANY": 2,
+          "ADDRESS": 8843,
+          "DATE": 2,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "DATE": {
+          "O": 722,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 11683,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 23,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 1,
+          "EMAIL": 201,
+          "PHONE": 1,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 54,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 615,
+          "ACCOUNT": 0,
+          "ID": 2
+        },
+        "ACCOUNT": {
+          "O": 50,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 375,
+          "ID": 2
+        },
+        "ID": {
+          "O": 26,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 2,
+          "DATE": 0,
+          "EMAIL": 2,
+          "PHONE": 2,
+          "ACCOUNT": 4,
+          "ID": 406
+        }
       }
     }
   },
@@ -476,6 +1082,107 @@
         "missed": 6824,
         "invented": 1186,
         "correct": 4332
+      },
+      "confusion": {
+        "O": {
+          "O": 507531,
+          "NAME": 416,
+          "COMPANY": 891,
+          "ADDRESS": 1072,
+          "DATE": 1212,
+          "EMAIL": 2,
+          "PHONE": 37,
+          "ACCOUNT": 5,
+          "ID": 2
+        },
+        "NAME": {
+          "O": 2737,
+          "NAME": 4422,
+          "COMPANY": 88,
+          "ADDRESS": 643,
+          "DATE": 7,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "COMPANY": {
+          "O": 4770,
+          "NAME": 155,
+          "COMPANY": 3212,
+          "ADDRESS": 178,
+          "DATE": 4,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 5683,
+          "NAME": 560,
+          "COMPANY": 49,
+          "ADDRESS": 4618,
+          "DATE": 34,
+          "EMAIL": 0,
+          "PHONE": 19,
+          "ACCOUNT": 24,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 5648,
+          "NAME": 0,
+          "COMPANY": 1,
+          "ADDRESS": 20,
+          "DATE": 7864,
+          "EMAIL": 0,
+          "PHONE": 2,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 238,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 64,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 395,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 137,
+          "DATE": 5,
+          "EMAIL": 0,
+          "PHONE": 335,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ACCOUNT": {
+          "O": 471,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 69,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 21,
+          "ID": 0
+        },
+        "ID": {
+          "O": 478,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 21
+        }
       }
     },
     "HMM + Viterbi": {
@@ -544,6 +1251,107 @@
         "missed": 2920,
         "invented": 1734,
         "correct": 8764
+      },
+      "confusion": {
+        "O": {
+          "O": 497576,
+          "NAME": 966,
+          "COMPANY": 1865,
+          "ADDRESS": 5014,
+          "DATE": 2824,
+          "EMAIL": 1118,
+          "PHONE": 740,
+          "ACCOUNT": 1058,
+          "ID": 7
+        },
+        "NAME": {
+          "O": 749,
+          "NAME": 6718,
+          "COMPANY": 81,
+          "ADDRESS": 254,
+          "DATE": 11,
+          "EMAIL": 50,
+          "PHONE": 9,
+          "ACCOUNT": 26,
+          "ID": 1
+        },
+        "COMPANY": {
+          "O": 2463,
+          "NAME": 154,
+          "COMPANY": 5535,
+          "ADDRESS": 122,
+          "DATE": 7,
+          "EMAIL": 12,
+          "PHONE": 3,
+          "ACCOUNT": 23,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 432,
+          "NAME": 41,
+          "COMPANY": 8,
+          "ADDRESS": 10471,
+          "DATE": 0,
+          "EMAIL": 20,
+          "PHONE": 0,
+          "ACCOUNT": 15,
+          "ID": 0
+        },
+        "DATE": {
+          "O": 1712,
+          "NAME": 10,
+          "COMPANY": 1,
+          "ADDRESS": 15,
+          "DATE": 11767,
+          "EMAIL": 13,
+          "PHONE": 8,
+          "ACCOUNT": 9,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 112,
+          "NAME": 0,
+          "COMPANY": 1,
+          "ADDRESS": 12,
+          "DATE": 0,
+          "EMAIL": 176,
+          "PHONE": 1,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 143,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 21,
+          "DATE": 0,
+          "EMAIL": 7,
+          "PHONE": 696,
+          "ACCOUNT": 4,
+          "ID": 0
+        },
+        "ACCOUNT": {
+          "O": 377,
+          "NAME": 1,
+          "COMPANY": 3,
+          "ADDRESS": 82,
+          "DATE": 3,
+          "EMAIL": 5,
+          "PHONE": 6,
+          "ACCOUNT": 85,
+          "ID": 2
+        },
+        "ID": {
+          "O": 403,
+          "NAME": 6,
+          "COMPANY": 1,
+          "ADDRESS": 12,
+          "DATE": 0,
+          "EMAIL": 1,
+          "PHONE": 7,
+          "ACCOUNT": 2,
+          "ID": 67
+        }
       }
     },
     "SVM": {
@@ -612,6 +1420,107 @@
         "missed": 2518,
         "invented": 1019,
         "correct": 11312
+      },
+      "confusion": {
+        "O": {
+          "O": 507717,
+          "NAME": 198,
+          "COMPANY": 850,
+          "ADDRESS": 1253,
+          "DATE": 1013,
+          "EMAIL": 3,
+          "PHONE": 55,
+          "ACCOUNT": 51,
+          "ID": 28
+        },
+        "NAME": {
+          "O": 1062,
+          "NAME": 6706,
+          "COMPANY": 76,
+          "ADDRESS": 46,
+          "DATE": 3,
+          "EMAIL": 6,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "COMPANY": {
+          "O": 2430,
+          "NAME": 94,
+          "COMPANY": 5772,
+          "ADDRESS": 18,
+          "DATE": 3,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "ADDRESS": {
+          "O": 1312,
+          "NAME": 40,
+          "COMPANY": 6,
+          "ADDRESS": 9625,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "DATE": {
+          "O": 1583,
+          "NAME": 1,
+          "COMPANY": 1,
+          "ADDRESS": 5,
+          "DATE": 11944,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "EMAIL": {
+          "O": 61,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 241,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 86,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 6,
+          "DATE": 3,
+          "EMAIL": 0,
+          "PHONE": 775,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "ACCOUNT": {
+          "O": 170,
+          "NAME": 1,
+          "COMPANY": 1,
+          "ADDRESS": 20,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 366,
+          "ID": 6
+        },
+        "ID": {
+          "O": 129,
+          "NAME": 1,
+          "COMPANY": 1,
+          "ADDRESS": 2,
+          "DATE": 2,
+          "EMAIL": 3,
+          "PHONE": 0,
+          "ACCOUNT": 19,
+          "ID": 342
+        }
       }
     },
     "CRF": {
@@ -680,6 +1589,107 @@
         "missed": 2194,
         "invented": 982,
         "correct": 12257
+      },
+      "confusion": {
+        "O": {
+          "O": 507394,
+          "NAME": 291,
+          "COMPANY": 1122,
+          "ADDRESS": 899,
+          "DATE": 1021,
+          "EMAIL": 2,
+          "PHONE": 164,
+          "ACCOUNT": 239,
+          "ID": 36
+        },
+        "NAME": {
+          "O": 909,
+          "NAME": 6833,
+          "COMPANY": 107,
+          "ADDRESS": 38,
+          "DATE": 6,
+          "EMAIL": 5,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "COMPANY": {
+          "O": 2044,
+          "NAME": 74,
+          "COMPANY": 6198,
+          "ADDRESS": 0,
+          "DATE": 2,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 1001,
+          "NAME": 33,
+          "COMPANY": 9,
+          "ADDRESS": 9943,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "DATE": {
+          "O": 1414,
+          "NAME": 1,
+          "COMPANY": 5,
+          "ADDRESS": 1,
+          "DATE": 12113,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "EMAIL": {
+          "O": 57,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 244,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 1
+        },
+        "PHONE": {
+          "O": 84,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 786,
+          "ACCOUNT": 1,
+          "ID": 1
+        },
+        "ACCOUNT": {
+          "O": 184,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 2,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 364,
+          "ID": 12
+        },
+        "ID": {
+          "O": 124,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 3,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 16,
+          "ID": 352
+        }
       }
     },
     "BiLSTM-CRF": {
@@ -748,6 +1758,107 @@
         "missed": 1577,
         "invented": 1111,
         "correct": 12981
+      },
+      "confusion": {
+        "O": {
+          "O": 507170,
+          "NAME": 242,
+          "COMPANY": 1206,
+          "ADDRESS": 1016,
+          "DATE": 1213,
+          "EMAIL": 44,
+          "PHONE": 179,
+          "ACCOUNT": 48,
+          "ID": 50
+        },
+        "NAME": {
+          "O": 695,
+          "NAME": 7076,
+          "COMPANY": 86,
+          "ADDRESS": 25,
+          "DATE": 2,
+          "EMAIL": 7,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 6
+        },
+        "COMPANY": {
+          "O": 1403,
+          "NAME": 72,
+          "COMPANY": 6837,
+          "ADDRESS": 1,
+          "DATE": 3,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 2,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 470,
+          "NAME": 16,
+          "COMPANY": 0,
+          "ADDRESS": 10496,
+          "DATE": 0,
+          "EMAIL": 1,
+          "PHONE": 0,
+          "ACCOUNT": 1,
+          "ID": 3
+        },
+        "DATE": {
+          "O": 943,
+          "NAME": 0,
+          "COMPANY": 5,
+          "ADDRESS": 1,
+          "DATE": 12584,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 1,
+          "ID": 1
+        },
+        "EMAIL": {
+          "O": 27,
+          "NAME": 0,
+          "COMPANY": 1,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 273,
+          "PHONE": 0,
+          "ACCOUNT": 1,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 29,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 825,
+          "ACCOUNT": 0,
+          "ID": 18
+        },
+        "ACCOUNT": {
+          "O": 116,
+          "NAME": 0,
+          "COMPANY": 5,
+          "ADDRESS": 2,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 422,
+          "ID": 18
+        },
+        "ID": {
+          "O": 98,
+          "NAME": 3,
+          "COMPANY": 0,
+          "ADDRESS": 0,
+          "DATE": 1,
+          "EMAIL": 5,
+          "PHONE": 0,
+          "ACCOUNT": 13,
+          "ID": 379
+        }
       }
     },
     "BERT": {
@@ -816,6 +1927,107 @@
         "missed": 1086,
         "invented": 1375,
         "correct": 13632
+      },
+      "confusion": {
+        "O": {
+          "O": 507382,
+          "NAME": 313,
+          "COMPANY": 1281,
+          "ADDRESS": 803,
+          "DATE": 1168,
+          "EMAIL": 24,
+          "PHONE": 117,
+          "ACCOUNT": 46,
+          "ID": 34
+        },
+        "NAME": {
+          "O": 504,
+          "NAME": 7280,
+          "COMPANY": 92,
+          "ADDRESS": 17,
+          "DATE": 1,
+          "EMAIL": 5,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "COMPANY": {
+          "O": 881,
+          "NAME": 48,
+          "COMPANY": 7377,
+          "ADDRESS": 11,
+          "DATE": 0,
+          "EMAIL": 2,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "ADDRESS": {
+          "O": 482,
+          "NAME": 13,
+          "COMPANY": 0,
+          "ADDRESS": 10489,
+          "DATE": 1,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 2
+        },
+        "DATE": {
+          "O": 752,
+          "NAME": 5,
+          "COMPANY": 1,
+          "ADDRESS": 3,
+          "DATE": 12774,
+          "EMAIL": 0,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "EMAIL": {
+          "O": 38,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 263,
+          "PHONE": 0,
+          "ACCOUNT": 0,
+          "ID": 0
+        },
+        "PHONE": {
+          "O": 31,
+          "NAME": 0,
+          "COMPANY": 0,
+          "ADDRESS": 2,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 830,
+          "ACCOUNT": 2,
+          "ID": 7
+        },
+        "ACCOUNT": {
+          "O": 77,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 483,
+          "ID": 1
+        },
+        "ID": {
+          "O": 28,
+          "NAME": 1,
+          "COMPANY": 0,
+          "ADDRESS": 1,
+          "DATE": 0,
+          "EMAIL": 0,
+          "PHONE": 1,
+          "ACCOUNT": 4,
+          "ID": 464
+        }
       }
     }
   }
