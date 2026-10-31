@@ -54,7 +54,7 @@ Architecture and specific model are listed separately, as the course asks.
 | # | Role | Architecture | Specific model | Folder |
 |---|---|---|---|---|
 | 1 | baseline | Most frequent tag | Each word gets the tag it had most often in train; unknown words get O | `baselines/` |
-| 2 | baseline | HMM | First-order HMM, add-k smoothing, our own Viterbi (NumPy) | `baselines/` |
+| 2 | baseline | HMM | First-order HMM, add-k smoothing, word-shape classes for rare words, our own Viterbi (NumPy) | `baselines/` |
 | 3 | baseline | SVM | `LinearSVC` (scikit-learn), window and word-shape features | `svm_crf/` |
 | 4 | baseline | CRF | `sklearn-crfsuite` (L-BFGS), same features as the SVM plus tag transitions | `svm_crf/` |
 | 5 | baseline | BiLSTM-CRF | GloVe 100d + character CNN + 2-layer BiLSTM (128) + CRF (`pytorch-crf`) | `bilstm_crf/` |
@@ -65,7 +65,7 @@ What each model can use, following the three information sources from the lectur
 | Model | Word-tag probability | Neighboring words / tags | Word shape |
 |---|---|---|---|
 | Most frequent | yes | no | no |
-| HMM | yes | tag transitions | no |
+| HMM | yes | tag transitions | only for rare and unseen words (shape classes) |
 | SVM | as a feature | ±2 word window, no tag dependency | hand-written features |
 | CRF | as a feature | ±2 word window and tag transitions | hand-written features |
 | BiLSTM-CRF | learned | whole sentence (BiLSTM) and tag transitions | learned (character CNN) |
@@ -91,47 +91,72 @@ metric is used in the final comparison.
 
 ## Results (test split)
 
-The numbers below come from each model's own results file. `python benchmark/run_benchmark.py`
-recomputes all of them with the shared script and writes the final tables and charts to
+All numbers below are computed by `benchmark/run_benchmark.py` with the shared evaluation
+(seqeval, strict IOB2) on the test split. Full tables for val and test, and the charts, are in
 `benchmark/results/`.
 
-| Model | Precision | Recall | Entity F1 | Token accuracy | Missed PII |
-|---|---:|---:|---:|---:|---:|
-| Most frequent* | 0.232 | 0.310 | 0.265 | 0.949 | 69.0% |
-| HMM + Viterbi* | 0.547 | 0.497 | 0.521 | 0.953 | 50.3% |
-| SVM | 0.802 | 0.728 | 0.763 | 0.980 | 27.2% |
-| CRF | 0.859 | 0.789 | 0.822 | 0.981 | 21.1% |
-| BiLSTM-CRF | 0.864 | 0.835 | 0.849 | 0.985 | 16.5% |
-| **BERT** | 0.860 | **0.877** | **0.868** | **0.987** | **12.3%** |
+| Model | Precision | Recall | Entity F1 | Macro F1 | Token accuracy | Missed PII |
+|---|---:|---:|---:|---:|---:|---:|
+| Most frequent | 0.397 | 0.279 | 0.327 | 0.251 | 0.949 | 72.1% |
+| HMM + Viterbi | 0.630 | 0.564 | 0.595 | 0.528 | 0.960 | 43.6% |
+| SVM | 0.802 | 0.728 | 0.763 | 0.780 | 0.980 | 27.2% |
+| CRF | 0.859 | 0.789 | 0.822 | 0.825 | 0.981 | 21.1% |
+| BiLSTM-CRF | **0.864** | 0.835 | 0.849 | 0.847 | 0.985 | 16.5% |
+| **BERT** | 0.860 | **0.877** | **0.868** | **0.885** | **0.987** | **12.3%** |
 
-\* The two baseline scores were computed with a lenient entity rule: an `I-` tag without a
-`B-` before it starts a new entity. Strict IOB2 does not count those, so their strict scores
-from `run_benchmark.py` can be lower.
+![Test entity F1 by model](benchmark/results/f1_by_model.png)
 
 Entity F1 per type:
 
 | Model | ACCOUNT | ADDRESS | COMPANY | DATE | EMAIL | ID | NAME | PHONE |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Most frequent* | 0.059 | 0.023 | 0.231 | 0.405 | 0.414 | 0.082 | 0.284 | 0.246 |
-| HMM + Viterbi* | 0.083 | 0.494 | 0.449 | 0.569 | 0.380 | 0.081 | 0.618 | 0.349 |
+| Most frequent | 0.060 | 0.041 | 0.274 | 0.474 | 0.417 | 0.082 | 0.320 | 0.338 |
+| HMM + Viterbi | 0.236 | 0.553 | 0.487 | 0.628 | 0.699 | 0.236 | 0.713 | 0.668 |
 | SVM | 0.725 | 0.682 | 0.633 | 0.813 | 0.940 | 0.784 | 0.808 | 0.854 |
 | CRF | 0.714 | 0.864 | 0.740 | 0.846 | 0.941 | 0.784 | 0.831 | 0.881 |
 | BiLSTM-CRF | 0.789 | 0.895 | 0.789 | 0.862 | 0.918 | 0.783 | 0.862 | 0.876 |
 | BERT | 0.874 | 0.889 | 0.825 | 0.869 | 0.927 | 0.918 | 0.877 | 0.900 |
 
+![Test entity F1 per PII type](benchmark/results/per_type_f1.png)
+
+Error types (number of test entities). Each wrong gold entity is a boundary error (right
+type, wrong span), a type error (right span, wrong type), both, or missed; a predicted entity
+that overlaps no gold entity is invented.
+
+| Model | Correct | Boundary | Type | Boundary and type | Missed | Invented |
+|---|---:|---:|---:|---:|---:|---:|
+| Most frequent | 4,332 | 4,002 | 54 | 329 | 6,824 | 1,186 |
+| HMM + Viterbi | 8,764 | 3,275 | 61 | 521 | 2,920 | 1,734 |
+| SVM | 11,312 | 1,516 | 80 | 115 | 2,518 | 1,019 |
+| CRF | 12,257 | 876 | 82 | 132 | 2,194 | 982 |
+| BiLSTM-CRF | 12,981 | 752 | 118 | 113 | 1,577 | 1,111 |
+| BERT | 13,632 | 677 | 55 | 91 | 1,086 | 1,375 |
+
+![Test errors by type](benchmark/results/error_types.png)
+
 ### What the results show
 
 - **Accuracy hides the problem.** The most frequent baseline has 94.9% token accuracy but
-  only 0.265 entity F1, because most words are `O`. This is why we rank by entity F1.
+  only 0.327 entity F1, because most words are `O`. This is why we rank by entity F1.
+- **Tag transitions and word shape (most frequent → HMM, +0.268 F1).** The HMM adds tag
+  transitions and maps rare and unseen words to shape classes (email, IBAN, phone, number,
+  capitalization). The largest gain is on ADDRESS (0.041 → 0.553), the longest entities,
+  where transitions keep multi-word spans together. EMAIL (0.417 → 0.699) and PHONE
+  (0.338 → 0.668) gain from the shape classes, since most of their values never appear in
+  training.
 - **Tag dependency (SVM → CRF, +0.059 F1).** The two models use exactly the same features;
   the only difference is that the CRF learns tag transitions. The gain is largest on
   ADDRESS (0.682 → 0.864), the type with the longest entities, where predicting each word
-  alone breaks entities apart.
+  alone breaks entities apart. Boundary errors fall from 1,516 to 876.
 - **Learned representations (CRF → BiLSTM-CRF, +0.027 F1).** Learned word and character
   features help most on ACCOUNT (0.714 → 0.789) and COMPANY (0.740 → 0.789).
 - **Pre-training (BiLSTM-CRF → BERT, +0.019 F1).** BERT mostly raises recall (0.835 →
   0.877). The largest gains are on ID (0.783 → 0.918) and ACCOUNT (0.789 → 0.874): numbers
   whose type depends on the words around them.
+- **Most errors are missed entities and wrong boundaries, not wrong types.** Type errors
+  stay below 120 for every model, while missed entities are at least ten times more common.
+  BERT misses the fewest entities but invents more than SVM, CRF and BiLSTM-CRF
+  (1,375 vs 982 to 1,111).
 - **The task is not solved.** The best model still misses 12.3% of PII entities, no type
   reaches 0.93 F1 with BERT, and COMPANY (0.825) remains its hardest type.
 
