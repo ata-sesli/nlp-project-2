@@ -3,7 +3,7 @@
 
 ## 1. Project Overview
 
-This project focuses on Named Entity Recognition (NER) using BIO tagging. The objective is to identify personal and financial information entities in text sequences.
+This project focuses on PII detection, framed as sequence labeling with BIO tags. The objective is to identify personal and financial information entities in text sequences.
 
 Two baseline approaches were implemented and evaluated:
 
