@@ -7,3 +7,4 @@ torch
 huggingface-hub
 matplotlib
 pytorch-crf
+datasets

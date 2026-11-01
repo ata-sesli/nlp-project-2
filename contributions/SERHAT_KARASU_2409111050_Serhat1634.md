@@ -1,4 +1,3 @@
-
 # Individual Contribution Report
 
 **Name:** Serhat Karasu
@@ -10,7 +9,7 @@
 
 My main responsibility in this project was dataset preparation, implementation of statistical baseline models, HMM-based sequence labeling, Viterbi decoding, evaluation, and result analysis.
 
-My contribution focused on building a reproducible data preparation and evaluation pipeline and comparing a simple frequency-based baseline with a Hidden Markov Model.
+My contribution focused on building a reproducible data preparation pipeline and implementing and evaluating statistical sequence-labeling approaches.
 
 ## 2. Dataset Preparation
 
@@ -23,9 +22,12 @@ My work included:
 - Splitting training documents before chunking to prevent document-level data leakage.
 - Preserving the original test source split.
 - Removing duplicate training documents that overlap with the test split.
-- Dividing long sequences into chunks with a maximum length of 200 tokens.
+- Dividing long sequences into chunks with a target length of 200 tokens.
+- Preferring sentence and line boundaries when creating chunks.
+- Preserving entity continuity when possible, even if a chunk needs to exceed the target length.
 - Saving the processed datasets in compressed JSONL format.
 - Generating dataset statistics and a preparation report.
+- Documenting the dataset source, filtering rules, tokenization, BIO conversion, and data preparation workflow.
 
 The resulting dataset contains 30,545 training chunks, 3,389 validation chunks, and 3,903 test chunks.
 
@@ -33,7 +35,9 @@ The dataset includes eight entity categories and 17 BIO labels.
 
 **Main file:** `dataset/prepare_dataset.py`
 
-**Documentation:** `dataset/data/REPORT.md`
+**Documentation:**
+- `dataset/README.md`
+- `dataset/data/REPORT.md`
 
 ## 3. Most Frequent Baseline
 
@@ -56,8 +60,9 @@ The model includes:
 - Token emission probabilities.
 - Laplace smoothing with alpha = 0.1.
 - Lowercased token handling.
-- An unknown-token mechanism.
-- BIO transition constraints.
+- Word-shape features for recognizing patterns such as email addresses, phone numbers, numeric strings, URLs, and capitalization patterns.
+- An unknown-token mechanism that maps rare or unseen words to word-shape features.
+- BIO transition constraints to prevent invalid tag transitions.
 
 I also implemented Viterbi decoding to determine the most probable BIO tag sequence for each input sequence.
 
@@ -67,48 +72,54 @@ The Viterbi algorithm uses dynamic programming to find the highest-probability s
 
 ## 5. Evaluation and Comparison
 
-I implemented evaluation and comparison workflows for both models.
+I contributed to the evaluation and comparison of the statistical baseline models using the project's shared benchmark pipeline.
 
 The evaluation includes:
 
 - Token-level accuracy.
-- Macro precision, recall, and F1.
-- Weighted F1.
 - Entity-level precision, recall, and F1.
+- Macro F1 across entity categories.
 - Per-entity-type exact-span evaluation.
+- Missed PII rate.
+- Error analysis, including boundary, entity-type, missed-entity, and invented-entity errors.
 
-For entity-level evaluation, a prediction is considered correct only when its entity type, start position, and end position match the gold annotation.
+For entity-level evaluation, a prediction is considered correct only when its entity type, start position, and end position exactly match the gold annotation.
 
-The evaluator checks record identifiers and sequence lengths before comparing predictions. Invalid `I-TYPE` tags that do not continue an entity of the same type are interpreted as the beginning of a new entity of that type.
-
-I also generated prediction files and machine-readable result files for validation and test splits.
-
-**Main files:**
-
-- `baselines/entity_evaluation.py`
-- `baselines/compare_models.py`
+This strict evaluation approach distinguishes correct entity recognition from predictions that only partially overlap with the annotated spans.
 
 ## 6. Main Results
 
-On the test set, the HMM with Viterbi decoding achieved:
+On the shared test benchmark, the HMM with Viterbi decoding achieved:
 
-- Token-level accuracy: 0.9532
-- Token-level macro F1: 0.4688
-- Entity-level precision: 0.5469
-- Entity-level recall: 0.4971
-- Entity-level F1: 0.5208
+- Token-level accuracy: 0.960
+- Entity-level precision: 0.630
+- Entity-level recall: 0.564
+- Entity-level F1: 0.595
+- Entity-type macro F1: 0.528
+- Missed PII rate: 0.436
 
-The Most Frequent baseline achieved an entity-level F1 score of 0.2653.
+The Most Frequent baseline achieved an entity-level F1 score of 0.327.
 
-These results show that the HMM model performs substantially better than the Most Frequent baseline in exact-span entity recognition.
+The HMM therefore achieved a higher exact-span entity F1 score than the Most Frequent baseline.
 
-The results and detailed interpretation are available in:
+The per-entity results also showed the following F1 scores:
 
-`baselines/ANALYSIS.md`
+- EMAIL: 0.699
+- PHONE: 0.668
+- NAME: 0.713
+- DATE: 0.628
+- ADDRESS: 0.553
+- COMPANY: 0.487
+- ACCOUNT: 0.236
+- ID: 0.236
+
+These results show that the HMM performed better on some entity categories than others, with ACCOUNT and ID recognition remaining particularly challenging.
 
 ## 7. Files Included in My Contribution
 
 - `dataset/prepare_dataset.py`
+- `dataset/inspect_dataset.py`
+- `dataset/README.md`
 - `dataset/data/REPORT.md`
 - `dataset/data/labels.json`
 - `dataset/data/train.jsonl.gz`
@@ -116,15 +127,14 @@ The results and detailed interpretation are available in:
 - `dataset/data/test.jsonl.gz`
 - `baselines/most_frequent.py`
 - `baselines/hmm_viterbi.py`
-- `baselines/entity_evaluation.py`
-- `baselines/compare_models.py`
-- `baselines/predictions/`
-- `baselines/results/`
-- `baselines/ANALYSIS.md`
+- `benchmark/`
+- `requirements.txt`
 - This contribution document.
 
 ## 8. Summary
 
-My contribution covers the complete workflow from dataset preparation to statistical model evaluation and result analysis.
+My contribution covers the workflow from dataset preparation to statistical sequence-labeling experiments and result analysis.
 
-The implemented pipeline provides reproducible dataset splits, two baseline approaches, HMM-based sequence decoding, token-level and entity-level evaluation, and a detailed comparison of the experimental results.
+The implemented work provides reproducible dataset preparation, document-level data splitting, BIO sequence labeling, a Most Frequent baseline, HMM-based sequence modeling, Viterbi decoding, and evaluation through the project's shared benchmark.
+
+This work establishes a statistical baseline and provides a basis for comparing traditional sequence-labeling approaches with more advanced machine learning and deep learning models.
