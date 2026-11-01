@@ -1,5 +1,3 @@
-
-cat > dataset/README.md <<'EOF'
 # Dataset Preparation
 
 This directory contains the dataset preparation pipeline for the Personally Identifiable Information (PII) detection task.
@@ -194,9 +192,8 @@ Each generated record contains the information required by the downstream sequen
 ---
 
 For detailed filtering counts and dataset statistics, see [`data/REPORT.md`](data/REPORT.md).
-EOF
 
-To inspect the generated dataset, review split statistics, and examine sample records, run:
+To inspect the raw source dataset (language distribution, PII label counts, malformed and invalid spans, short documents and documents without PII), run:
 
 ```bash
 python dataset/inspect_dataset.py

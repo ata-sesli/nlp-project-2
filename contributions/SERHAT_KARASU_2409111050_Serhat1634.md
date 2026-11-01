@@ -127,7 +127,7 @@ These results show that the HMM performed better on some entity categories than 
 - `dataset/data/test.jsonl.gz`
 - `baselines/most_frequent.py`
 - `baselines/hmm_viterbi.py`
-- `benchmark/`
+- `benchmark/results/` (first full benchmark run)
 - `requirements.txt`
 - This contribution document.
 
